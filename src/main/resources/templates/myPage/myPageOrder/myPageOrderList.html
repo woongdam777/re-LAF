@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/mypage/myPageOrder/myPageOrderList.css">
+  <title>LAF :: 주문조회</title>
+
+</head>
+<body>
+  <th:block th:replace="~{common/header}"></th:block>
+  <th:block th:replace="~{common/nav}"></th:block>
+  
+  <main>
+    <!-- 마이페이지 sidebar -->
+    <th:block th:replace="~{myPage/myPageSide}"></th:block>
+    
+    <!-- 주문 정보 목록 -->
+    <section id="mypageOrderList">
+      <!-- 섹션 헤더(제목, 설명) -->
+      <div class="section-header">
+        <div class="section-title">주문조회</div>
+      </div>
+
+      <!-- 주문조회 필터링 -->
+      <form action="/myPage/order" method="get" id="orderFilter">
+        <div>
+          <select name="os" id="orderStateSelect">
+            <option value="">전체</option>
+            <option value="A">주문접수</option>
+            <option value="B">결제확인</option>
+            <option value="C">상품준비중</option>
+            <option value="D">출고완료</option>
+            <option value="E">배송중</option>
+            <option value="F">배송완료</option>
+            <option value="G">취소중</option>
+            <option value="H">취소완료</option>
+            <option value="I">교환중</option>
+            <option value="J">교환완료</option>
+            <option value="K">반품중</option>
+            <option value="L">반품완료</option>
+          </select>
+        </div>
+
+        <div>
+          <ul id="dateFilterBtn">
+            <li>오늘</li>
+            <li>1주일</li>
+            <li>1개월</li>
+            <li>3개월</li>
+            <li>6개월</li>
+          </ul>
+        </div>
+
+        <div id="dateFilter">
+          <input th:unless="${sd != '3'}" type="date" name="sd">
+          <input th:if="${sd != '3'}" type="date" name="sd" th:value="${sd}">
+          ~
+          <input th:unless="${ed}" type="date" name="ed">
+          <input th:if="${ed}" type="date" name="ed" th:value="${ed}">
+        </div>
+        
+        <div id="searchButtonArea">
+          <button class="submit">조회</button>
+        </div>
+      </form>
+
+      <div id="orderFilterInfo">
+        <p>· 기본적으로 3개월간의 자료가 조회되며, 기간 검색시 주문처리완료 후 36개월 이내의 주문내역을 조회하실 수 있습니다.</p>
+        <p>· 주문번호를 클릭하시면 해당 주문에 대한 상세내역을 확인하실 수 있습니다.</p>
+      </div>
+      <section id="orderList">
+        <div class="table-title">주문상품정보</div>
+        <table>
+          <tr>
+            <td class="item-order-info">주문정보</td>
+            <td class="item-image">이미지</td>
+            <td class="item-product header">상품정보</td>
+            <td class="item-count">수량</td>
+            <td class="item-price-set">구매금액</td>
+            <td class="item-order-state header">주문처리상태</td>
+            <td class="item-choose">선택</td>
+          </tr>
+          <tr th:each="orderMap : ${orderMaps}" th:object="${orderMap}">
+            <td class="item-order-info">
+              <div class="item-order-date" th:text="*{#strings.substring(order.orderDate,0,10)}">주문날짜</div>
+              <div class="item-order-no"><a th:href="'/order/'+*{order.orderNo}"><p id="orderNum" th:text="'[ ' + *{order.orderUno}+' ]'">주문번호</p></a></div>
+            </td>
+            <td class="item-image">
+              <a th:href="'/product/' + *{orderProduct.product.productNo}">
+                <img width="70px" th:src="*{orderProduct.product.thumbnailPath}">
+              </a>
+            </td>
+            <td class="item-product">
+              <div>
+                <span th:text="*{orderProduct.product.productName}"></span>
+                <span id="orderNum" th:text=" *{orderProduct.count - 1} > 0?' 외 ' + *{orderProduct.count - 1} + ' 개'">제품명</span>
+              </div>
+              <p class="item-product-option">
+                [ 옵션 : <span class="item-selected-option" th:text="*{orderProduct.option.size}?' '+*{orderProduct.option.color} +' '+*{orderProduct.option.size+' '} : *{orderProduct.option.color}+' '">블랙/L</span>]
+              </p>
+            </td>
+            <td class="item-count" th:text="*{orderProduct.count}">1</td>
+            <td class="item-price-set">
+              <div class="item-price" th:text="${#numbers.formatInteger(orderMap.order.orderPayment, 3, 'COMMA')} + '원'">제품가격</div>
+            </td>
+            <td class="item-order-state">
+              <p class="orderState" th:text="*{order.orderState}">주문처리상태</p>
+            </td>
+            <td class="item-choose" th:if="*{order.orderState == 'A' or order.orderState == 'B' or order.orderState == 'C'}">
+              <button id="cancleBtn">주문취소</button>
+              <input type="hidden" id="orderNo" th:value="*{order.orderNo}">
+            </td>
+          </tr>
+        </table>
+      </section>
+
+      <!-- 페이징 -->
+      <div class="pagination-area">
+
+        <!-- 검색결과 -->
+        <ul class="pagination">
+
+          <!-- 첫 페이지로 이동 -->
+          <li><a th:href="@{/myPage/order(cp=1, os=${os}, sd=${sd}, ed=${ed})}">
+              <img th:src="@{/images/common/paging/first-page.svg}">
+            </a></li>
+
+          <!-- 이전 목록 마지막 번호로 이동 -->
+          <li><a th:href="@{/myPage/order(cp=${pagination.prevPage}, os=${os}, sd=${sd}, ed=${ed})}">
+              <img th:src="@{/images/common/paging/prev-page.svg}">
+            </a></li>
+
+          <!-- 특정 페이지로 이동 -->
+          <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage, 1)}">
+            <!-- 현재 보고있는 페이지 -->
+            <li th:if="${i == pagination.currentPage}">
+              <a class="current" th:text="${i}">현재 페이지</a>
+            </li>
+
+            <!-- 현재 페이지를 제외한 나머지 -->
+            <li th:unless="${i == pagination.currentPage}">
+              <a th:href="@{/myPage/order(cp=${i}, os=${os}, sd=${sd}, ed=${ed})}" th:text="${i}"></a>
+            </li>
+          </th:block>
+
+          <!-- 다음 목록 시작 번호로 이동 -->
+          <li><a th:href="@{/myPage/order(cp=${pagination.nextPage}, os=${os}, sd=${sd}, ed=${ed})}">
+              <img th:src="@{/images/common/paging/next-page.svg}">
+            </a></li>
+
+          <!-- 끝 페이지로 이동 -->
+          <li><a th:href="@{/myPage/order(cp=${pagination.maxPage}, os=${os}, sd=${sd}, ed=${ed})}">
+              <img th:src="@{/images/common/paging/last-page.svg}">
+            </a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <th:block th:replace="~{common/footer}"></th:block>
+  <script th:inline="javascript">
+    const os = /*[[${os}]]*/ "주문조회";
+  </script>
+  <script src="/js/mypage/myPageOrderList.js"></script>
+</body>
+</html>

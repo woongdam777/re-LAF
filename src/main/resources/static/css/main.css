@@ -1,0 +1,263 @@
+/* main */
+main {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 메인 banner 무한 슬라이드 */
+.slide_wrap { 
+  position: relative;
+  display: block;
+  margin-bottom: 130px;
+}
+.slide_box { 
+  overflow-x: hidden; 
+}
+.slide_list {
+  display: flex;
+}
+.clearfix:after { 
+  content: ''; 
+  display: block; 
+  clear: both; 
+  float: none; 
+}
+.slide_content { 
+  height: 600px;
+  width: 100%; 
+}
+.slide_content a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.slide_content img {
+  display: block;
+  width: 100%;
+  height: 600px;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+}
+
+/* 슬라이드 버튼 */
+[class^="slide_btn"] {
+  position: absolute;
+  top: 280px;
+  border-radius: 50px;
+  width: 40px;
+  height: 40px;
+  background-color: #ffffff25;
+  border: none;
+  cursor: pointer;
+  margin: 0 30px;
+  transition-duration: 0.2s;
+}
+[class^="slide_btn"]:hover {
+  background-color: #ffffff90;
+  transition-duration: 0.2s;
+}
+[class^="slide_btn"] > img{
+  width: 20px;
+  height: 20px;
+}
+.slide_btn_prev { left: 0; }
+.slide_btn_next { right: 0; }
+
+/* 슬라이드 페이지네이션 */
+.slide_pagination { 
+  position: absolute; 
+  left: 50%; 
+  bottom: 0; 
+  list-style: none; 
+  margin: 20px 0; 
+  padding: 0; 
+  transform: translateX(-50%); 
+}
+.slide_pagination .dot { 
+  display: inline-block; 
+  width: 15px; 
+  height: 15px; 
+  margin: 0 5px; 
+  overflow: hidden; 
+  background: #ffffff25;
+  border-radius: 50%; 
+  transition: 0.3s; 
+}
+.slide_pagination .dot.dot_active { background: #ffffff90; }
+.slide_pagination .dot a { 
+  display: block; 
+  width: 100%;
+  height: 100%; 
+}
+
+/* main product */
+.main-product{
+  width: 1200px;
+  margin: 100px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.main-product-left{
+  height: 400px;
+  width: 35%;
+  position: relative;
+}
+
+.main-product-right{
+  height: 400px;
+  width: 60%;
+  position: relative;
+}
+
+.main-product-left img, .main-product-right img{
+  position: absolute;
+  
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* md recommend */
+.md-recommend {
+  width: 1200px;
+  margin: 40px 0;
+  font-size: 2rem;
+  display: flex;
+}
+.md-recommend-left{
+  margin-top: 60px;
+  position: relative;
+  width: 700px;
+}
+.md-recommend-left p:nth-child(1){
+  font-weight: bold;
+}
+.md-recommend-left p:nth-child(2){
+  margin: 15px 0;
+  font-size: 1.4rem;
+}
+.md-recommend-btn{
+  position: absolute;
+  bottom: 15px;
+  display: flex;
+  justify-content: center;
+}
+.md-recommend-btn button {
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.md-recommend-btn button:first-child {
+  margin-right: 5px;
+}
+.md-recommend-btn img{
+  width: 20px;
+  height: 20px;
+}
+.md-recommend-right{
+  overflow: hidden;
+}
+.md-recommend-list{
+  display: flex;
+  justify-content: center;
+}
+.md-recommend-list > li{
+  height: 360px;
+  width: 280px;
+  margin: 5px;
+  position: relative;
+}
+.md-recommend .thumbnail {
+  height: 360px;
+  width: 280px;
+  object-fit: cover;
+  object-position: center;
+  border-top-left-radius: 200px;
+  border-top-right-radius: 200px;
+}
+
+/* weekly */
+.weekly {
+  width: 1200px;
+  margin: 50px 0;
+  font-size: 2rem;
+}
+.weekly-title {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 50px 0;
+}
+.weekly-title span {
+  font-size: 2rem;
+}
+.weekly-title button {
+  width: 120px;
+  height: 40px;
+  border: none;
+  border-bottom: 2px solid white;
+  margin: 20px 10px 0;
+  font-weight: bold;
+  font-size: 1.3rem;
+  letter-spacing: 3px;
+  cursor: pointer;
+  /* transition-duration: 0.2s; */
+  border-radius: 0;
+}
+.weekly-title button.current {
+  background-color: #f9f4f5;
+}
+.weekly-title button:hover {
+  background-color: white !important;
+  transition-duration: 0.2s;
+  border-bottom: 2px solid #f9f4f5 !important;
+}
+#weeklyProductContainer {
+  width: 100%;
+  display: grid;
+  row-gap: 10px;
+  column-gap: 10px;
+  grid-template-columns: 400px repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+.weekly-product { 
+  display: block;
+  position: relative;
+}
+.weekly-product:first-child {
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+.weekly-product a { 
+  display: block;
+}
+.weekly .thumbnail {
+  display: block;
+  width: 256.66px;
+  height: 330px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 10px;
+}
+.weekly-product:first-child .thumbnail {
+  width: 400px;
+  height: 670px;
+}
+.weekly-product:first-child .hover-info {
+  height: 130px;
+  padding: 30px;
+}
+
+/* 퀵메뉴 사라지기/나타나기 효과 시간 */
+.quick-menu {
+  transition-duration: 0.2s;
+}

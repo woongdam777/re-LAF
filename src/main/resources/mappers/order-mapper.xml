@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.kh.laf.order.model.mapper.OrderMapper">
+    
+    <!-- 주문자조회 -->
+    <select id="selectOrderMember" resultType="Member">
+        SELECT * FROM member
+        WHERE member_no = #{memberNo}
+	</select>
+
+    <!-- 상품조회 -->
+    <select id="selectOrderProduct" resultType="Product">
+		SELECT `product`.product_no,
+				product_name,
+				product_price,
+				product_sale_price,
+				product_sale,
+				product_point,
+				product_state,
+				DATE_FORMAT(product_date, '%Y-%m-%d') AS product_date,
+				click_count,
+				img_path AS thumbnail_path,
+				(select count(*) from `like` where  `product`.product_no = `like`.product_no) AS like_count
+		FROM   `product`
+				JOIN `product_img` ON `product`.product_no = `product_img`.product_no
+		WHERE  `product`.product_no = #{productNo}
+				AND thumb_fl  = 'Y'
+	</select>
+   
+    <!-- 옵션조회 -->
+    <select id="selectOrderProductOption" resultType="Option">
+		SELECT `size` , color 
+		FROM `option`
+		WHERE product_no = #{productNo}
+		AND option_no = #{optionNo}
+	</select>
+
+    <!-- 쿠폰조회 -->
+    <select id="selectCouponList" resultType="Coupon">
+		SELECT *
+		FROM coupon
+		WHERE member_no = #{memberNo}
+		AND coupon_fl = 'N'
+	</select>
+	
+	<!-- 주문옵션전체조회 -->
+	<select id="SelectOrderCheck" resultType="Option">
+		SELECT *
+		FROM `option` 
+		WHERE option_no = #{optionNo}
+		AND product_no = #{productNo}
+	</select>
+	
+	<!-- 상품이름조회 -->
+	<select id="SelectProductName" resultType="String">
+		SELECT product_name
+		FROM product
+		WHERE product_no = #{productNo}
+	</select>
+	
+	<!-- 비회원 생성 -->
+	<insert id="createNonMember" useGeneratedKeys="true" keyProperty="memberNo" parameterType="Member">
+		INSERT INTO `member`
+		VALUES (Null,
+				#{memberId}, 
+				#{memberPw}, 
+				#{memberName}, 
+				NULL, 
+				#{memberEmail}, 
+				#{memberPhone}, 
+				NULL, 
+				#{memberAddress}, 
+				'B', 
+				DEFAULT, 
+				DEFAULT, 
+				NULL, 
+				NULL, 
+				DEFAULT, 
+				DEFAULT, 
+				'Y', 
+				#{refundName}, 
+				#{refundBank}, 
+				#{refundAccount});
+	</insert>
+	
+	<!-- 비회원번호조회 -->
+	<select id="selectNonMember" resultType="Member">
+		SELECT member_no
+		FROM `member`
+		WHERE member_email = #{memberEmail}
+	</select>
+	
+	<!-- 주문고유번호 중복확인 -->
+	<select id="checkOrderKey" resultType="int">
+		SELECT count(*)
+		FROM `order`
+		WHERE order_uno = #{orderUno}
+	</select>
+	
+	<!-- 주문내역추가 -->
+	<insert id="insertOrder">
+		INSERT INTO `order`
+		VALUES(NULL,
+			   #{orderUno},
+			   #{memberNo},
+			   #{orderRecvName},
+			   #{orderRecvAdd},
+			   #{orderRecvPhone},
+			   Null,
+			   #{orderTotalPrice},
+			   #{orderPayment},
+			   DEFAULT,
+			   NULL,
+			   NULL,
+			   #{payment},
+			   #{paymentBank},
+			   #{paymentName},
+			   #{orderState},
+			   <if test="couponNo == 0"> NULL</if>
+			   <if test="couponNo != 0">#{couponNo}</if>
+			   )
+	</insert>
+	
+	<!-- 주문번호조회 -->
+	<select id="selectOrderNo" resultType="int">
+		SELECT order_no
+		FROM `order`
+		WHERE order_uno = #{orderUno}
+	</select>
+	
+	<!--주문상품목록테이블 추가 -->
+	<insert id="insertOrderProduct">
+		INSERT INTO `order_product`
+		VALUES(#{orderNo},
+			   #{productNo},
+			   #{optionNo},
+			   #{count},
+			   NUll,
+			   DEFAULT
+			   )
+	</insert>
+	
+	<!-- 상품 재고 최신화 -->
+	<update id="optionCountUpdate">
+		UPDATE `option`
+		SET stock = stock - ${count}, sell_count = sell_count + ${count}
+		WHERE product_no = ${productNo}
+		AND option_no = ${optionNo}
+	</update>
+	
+	<!-- 상품 모든 재고조회 -->
+	<select id="selectAllStock" resultType="int">
+		SELECT sum(stock)
+		FROM `option`
+		WHERE product_no = ${productNo}
+	</select>
+	
+	<!-- 상품 품절 전환 -->
+	<update id="updateSoldOut">
+		UPDATE product
+		SET product_state = 'S'
+		WHERE product_no = #{product_no}
+	</update>
+	
+	<!-- 적립금 적립 -->
+	<insert id="insertGainPoint" useGeneratedKeys="true" keyProperty="pointNo">
+		INSERT INTO `point`
+		VALUES(NULL,
+			   #{memberNo},
+			   #{pointSort},
+			   #{pointAmount},
+			   #{pointDate},
+			   #{pointDueDate},
+			   #{pointContent},
+			   #{orderNo})
+	</insert>
+	
+	<!-- 적립금 사용 -->
+	<insert id="insertUsePoint" useGeneratedKeys="true" keyProperty="pointNo">
+		INSERT INTO `point`
+		VALUES(NULL,
+			   #{memberNo},
+			   #{pointSort},
+			   #{pointAmount},
+			   #{pointDate},
+			   NULL,
+			   #{pointContent},
+			   #{orderNo})
+	</insert>
+	
+	<!-- order테이블 적립/사용 적립번호 업데이트 -->
+	<update id="updateOrderPointNo">
+		UPDATE `order`
+		SET point_no_gain = #{pointNoGain}
+			<if test="pointNoUse != 0">,point_no_use = #{pointNoUse}</if> 
+		WHERE order_no = #{orderNo}
+	</update>
+	
+	<!-- 회원 적립금, 누적구매액 최신화 -->
+	<update id="updateMemberPTP">
+		UPDATE `member`
+		SET member_point = member_point + ${pointNoGain} - ${pointNoUse},
+			member_totalpay = member_totalpay + ${orderPayment}
+		WHERE member_no = #{memberNo}
+	</update>
+	
+	<!-- 쿠폰 상태 업데이트 -->
+	<update id="updateCouponFL">
+		UPDATE coupon
+		SET coupon_fl = 'Y'
+		WHERE coupon_no = ${couponNo}
+	</update>
+	
+	<!-- 주문한 내역조회 -->
+	<select id="selectOrder" resultType="Order">
+		SELECT *
+		FROM `order`
+		WHERE order_no = #{orderNo}
+	</select>
+	
+	<!-- 주문한 상품목록조회 -->
+	<select id="selectOrderDetailProductList" resultType="OrderProduct">
+		SELECT *
+		FROM order_product
+		WHERE order_no = #{orderNo}
+	</select>
+	
+	<!-- 사용된 쿠폰할인액조회 -->
+	<select id="selectCoupon" resultType="Coupon">
+		SELECT *
+		FROM coupon
+		WHERE coupon_no = #{couponNo}
+	</select>
+	
+	<!-- 적립/사용된 적립금 조회 -->
+	<select id="selectPoint" resultType="String">
+		SELECT point_amount
+		FROM `point`
+		WHERE point_no = #{pointNo}
+	</select>
+	
+	<!-- 누적구매액 조회 -->
+	<select id="selectTotalPay" resultType="int">
+		SELECT member_totalpay
+		FROM `member`
+		WHERE member_no = #{memberNo}
+	</select>
+	<!-- 회원 등급 업데이트 -->
+	<update id="updateGrade">
+		UPDATE `member`
+		SET member_grade = #{memberGrade}
+		WHERE member_no = #{memberNo}
+	</update>
+	
+	<!-- 주문취소 -->
+	<!-- 주문상태업데이트(취소중) -->
+	<update id="updateOrderCancle">
+		UPDATE `order`
+		SET order_state = 'G'
+		WHERE order_no = #{orderNo}
+	</update>
+	
+	<!-- 주문상품목록업데이트(삭제) -->
+	<update id="updateOrderProductCancle">
+		UPDATE order_product
+		SET order_product_delete_fl = 'Y'
+		WHERE order_no = #{orderNo}
+	</update>
+	
+	<!-- 재고 복구 -->
+	<update id="updateStock">
+		UPDATE `option`
+		SET stock = stock + ${count}, sell_count = sell_count - ${count}
+		WHERE product_no = ${productNo}
+		AND option_no = ${optionNo}
+	</update>
+	
+	<!-- 상품 판매중 전환 -->
+	<update id="updateSell">
+		UPDATE product
+		SET product_state = 'O'
+		WHERE product_no = #{productNo}
+	</update>
+	
+	<!-- 적립된 적립금 반환 -->
+	<insert id="insertResetGainPoint">
+		INSERT INTO `point`
+		VALUES(NULL,
+			   #{memberNo},
+			   #{pointSort},
+			   #{pointAmount},
+			   #{pointDate},
+			   NULL,
+			   #{pointContent},
+			   #{orderNo})
+	</insert>
+	
+	<!-- 사용된 적립금 반환 -->
+	<insert id="insertResetUsePoint">
+		INSERT INTO `point`
+		VALUES(NULL,
+			   #{memberNo},
+			   #{pointSort},
+			   #{pointAmount},
+			   #{pointDate},
+			   #{pointDueDate},
+			   #{pointContent},
+			   #{orderNo})
+	</insert>
+	
+	<!-- 오늘 주문현황조회(관리자) -->
+	<select id="selectTodayOrderState" resultType="map">
+		SELECT order_state os, CAST(COUNT(order_state) AS CHAR(10)) count
+		FROM `order`
+		WHERE DATE(order_date) = CURDATE()
+		GROUP BY order_state
+	</select>
+	
+	<!-- 오늘 주문조회(관리자) -->
+	<select id="selectTodayOrder" resultType="Order">
+		SELECT *
+		FROM `order`
+		WHERE DATE(order_date) = CURDATE()
+		ORDER BY order_no DESC
+	</select>
+	
+	<!-- 주문처리상태변경(관리자) -->
+	<update id="changeOrderState">
+		UPDATE `order`
+		SET order_state = #{orderState}
+		WHERE order_no = #{orderNo}
+	</update>
+	
+	<!-- 조건에 맞는 주문조회목록 개수(관리자) -->
+	<select id="getfindOrderListCount" resultType="int">
+		SELECT COUNT(*)
+		FROM(
+			SELECT o.order_no FROM `order` o
+			LEFT JOIN order_product op ON o.order_no=op.order_no
+			LEFT JOIN product p ON op.product_no = p.product_no 
+			where 1=1
+			<if test="kw != null">
+				<if test="fs == '상품명'">
+					and product_name LIKE CONCAT('%', #{kw}, '%')
+				</if>
+				<if test="fs == '주문번호'">
+					and o.order_uno like CONCAT('%', #{kw}, '%')
+				</if>
+				<if test="fs == '전체'">
+					and (product_name LIKE CONCAT('%', #{kw}, '%')
+					OR o.order_uno like CONCAT('%', #{kw}, '%'))
+				</if>
+			</if>
+			<if test="sellState != null">
+				<foreach collection="sellState" item="ss" separator="or" open="and (" close=")">
+					o.order_state = #{ss}
+				</foreach>
+			</if>
+			<if test='sd != null and ed != null'>
+				<choose>
+					<when test='sd == ed'>
+						and	Date(o.order_date) like CONCAT('%', #{sd}, '%')
+					</when>
+					<otherwise>
+						and	Date(o.order_date) BETWEEN STR_TO_DATE(#{sd}, '%Y-%m-%d') AND STR_TO_DATE(#{ed}, '%Y-%m-%d')
+					</otherwise>
+				</choose>
+			</if>
+			<if test="payState != null">
+				<foreach collection="payState" item="pp" separator="or" open="and (" close=")">
+					o.payment = #{pp}
+				</foreach>
+			</if>
+			GROUP BY o.order_no
+		) AS sub
+	</select>
+	
+	<!-- 조건에 맞는 주문조회목록(관리자) -->
+	<select id="findOrderList" resultType="Order">
+		SELECT o.order_no, order_uno,order_recv_name,order_recv_add,order_recv_phone,order_recv_require,order_total_price,order_payment,order_date,order_state
+		FROM `order` o
+		LEFT JOIN order_product op ON o.order_no=op.order_no
+		LEFT JOIN product p ON op.product_no = p.product_no 
+		where 1=1
+		<if test="kw != null">
+			<if test="fs == '상품명'">
+				and product_name LIKE CONCAT('%', #{kw}, '%')
+			</if>
+			<if test="fs == '주문번호'">
+				and o.order_uno like CONCAT('%', #{kw}, '%')
+			</if>
+			<if test="fs == '전체'">
+				and (product_name LIKE CONCAT('%', #{kw}, '%')
+				OR o.order_uno like CONCAT('%', #{kw}, '%'))
+			</if>
+		</if>
+		<if test="sellState != null">
+			<foreach collection="sellState" item="ss" separator="or" open="and (" close=")">
+				o.order_state = #{ss}
+			</foreach>
+		</if>
+		<if test='sd != null and ed != null'>
+			<choose>
+				<when test='sd == ed'>
+					and	Date(o.order_date) like CONCAT('%', #{sd}, '%')
+				</when>
+				<otherwise>
+					and	Date(o.order_date) BETWEEN STR_TO_DATE(#{sd}, '%Y-%m-%d') AND STR_TO_DATE(#{ed}, '%Y-%m-%d')
+				</otherwise>
+			</choose>
+		</if>
+		<if test="payState != null">
+			<foreach collection="payState" item="pp" separator="or" open="and (" close=")">
+				o.payment = #{pp}
+			</foreach>
+		</if>
+		GROUP BY o.order_no
+		ORDER BY o.order_no DESC
+	</select>
+	
+	<!-- 오늘 매출 조회 -->
+	<select id="getRevenueToday">
+		SELECT sum(order_payment) AS revenue 
+		FROM `order`
+		WHERE date_format(order_date, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d')
+			  and order_state != 'H' and order_state != 'L' 
+	</select>
+	
+	<!-- 오늘 결제 확인 -->
+	<select id="getPaymentToday">
+		SELECT sum(order_payment) AS revenue 
+		FROM `order`
+		WHERE date_format(order_date, '%Y-%m-%d') = DATE_FORMAT(now(), '%Y-%m-%d')
+		      and order_state != 'H' and order_state != 'L' and order_state != 'A'
+	</select>
+	
+	<!-- 일별 매출 조회 (30일 전까지만 조회) -->
+	<select id="getRevenue" resultType="map">
+		SELECT b.`date`, ifnull(a.revenue, 0) AS `revenue`
+		FROM 
+		(
+			SELECT DATE_FORMAT(order_date, '%m / %d') AS `date`, sum(order_payment) AS revenue
+			FROM `order`
+			WHERE order_state != 'H' and order_state != 'L'
+			GROUP BY `date`
+		) a
+		right join  
+		( 
+			select  @N := @N +1 AS n ,  
+					date_format( DATE_SUB(now() , interval @N -1 day),'%m / %d') as `date`  
+			from (`order`), (select @N:=0 from dual ) a  
+			limit 30
+		) b ON a.`date` = b.`date`
+		ORDER BY `date`
+	</select>
+	
+	<!-- 월별 매출 조회 (12개월) -->
+	<select id="getRevenueMonth" resultType="map">
+		SELECT DATE_FORMAT(order_date, '%Y / %m') AS `date`, sum(order_payment) AS revenue 
+		FROM `order`
+		WHERE order_date >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+			  and order_state != 'H' and order_state != 'L'
+		GROUP BY `date`
+	</select>
+	
+	<!-- 연도별 매출 조회 -->
+	<select id="getRevenueYear" resultType="map">
+		SELECT DATE_FORMAT(order_date, '%Y') AS `date`, sum(order_payment) AS revenue 
+		FROM `order`
+		where order_state != 'H' and order_state != 'L'
+		GROUP BY `date`
+	</select>
+	
+	<!-- 주문번호로 회원번호 조회 -->
+	<select id="selectCompletOrderNo" resultType="int">
+        SELECT member_no FROM `order`
+        WHERE order_no = #{orderNo}
+	</select>
+	
+</mapper>
+

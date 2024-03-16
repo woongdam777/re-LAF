@@ -1,0 +1,167 @@
+.mypageShipping-mainFrame{
+    display: flex;
+    margin: 0 auto;
+    width: 1200px;
+}
+
+.orderShipping-mainFrame-myMain{
+    height: 482px;
+    width: 1020px;
+    margin: 80px 0 0 30px;
+}
+
+.orderShipping-myMain-text{
+    font-weight: bold;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.orderShipping-MyMain-Shipping {
+    width: 100%;
+    margin-left: 50px;
+}
+
+/* 테이블 구간 */
+.shipping-list-table {
+    width: 100%;
+    text-align: center;
+    border: 0.5px solid #eee;
+    margin-bottom: 10px;
+}
+
+.shipping-list-table * {
+    font-size: 1.2rem;
+}
+
+/* 열 설정 */
+.shipping-list-table > tbody > tr {
+    height: 40px;
+    border-bottom: 0.5px solid #eee;
+}
+
+/* 첫번째 열 */
+.shipping-list-table > tbody > tr:first-child {
+    background-color: #fafafa;
+}
+
+.shipping-list-table > tbody > tr:first-child > td {
+    border-right: 0.5px solid #eee;
+}
+
+
+/* 각 행별 설정 */
+.shipping-list-table > tbody > tr > th:nth-child(1) {
+    width: 5%;
+}
+
+.shipping-list-table > tbody > tr > td:nth-child(2) {
+    width: 10%;
+}
+
+.shipping-list-table > tbody > tr > td:nth-child(3) {
+    width: 10%;
+}
+
+.shipping-list-table > tbody > tr > td:nth-child(4) {
+    width: 20%;
+}
+
+.shipping-list-table > tbody > tr > td:nth-child(5) {
+    width: 45%;
+    text-align: left;
+    padding-left: 10px;
+}
+
+/* 첫번재 행 제외 */
+.shipping-list-table > tbody > tr:nth-child(1) > td:nth-child(5) {
+    text-align: center;
+    padding-left: 0px;
+}
+
+.shipping-list-table > tbody > tr > td:nth-child(5) > div{
+    display: flex;
+    justify-content: space-between;
+}
+
+.shipping-list-table > tbody > tr > td:nth-child(6) {
+    width: 10%;
+}
+
+/* 배송 주소록 유의사항 */
+.mypageAddShipping-Shipping-notice{
+    margin-bottom: 10px;
+    width: 100%;
+
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    
+    border: 1px solid #eee;
+    background-color: #fafafa;
+}
+
+.mypageAddShipping-Shipping-notice div{
+    width: 100%;
+    
+    text-align: left;
+    font-size: 1.2rem;
+    line-height: 2.0rem;
+}
+
+
+.mypageAddShipping-shipping-confirm div{
+    display: flex;
+    align-items: center;
+}
+
+.mypageAddShipping-shipping-confirm input{width: 10px}
+
+
+/* 버튼 영역 */
+.orderShipping-Shipping-button{
+    display: flex;
+    justify-content: center;
+}
+
+.orderShipping-Shipping-button > button{
+    margin: 5px;
+}
+
+
+/* 기본배송지 라벨 */
+.p-category-item {
+    display: inline-block;
+    padding: 3px 5px;
+    font-size: 1.2rem;
+    border-radius: 4px;
+    background-color: #eee;
+    margin-right: 10px;
+}
+
+
+  /* 삭제버튼 통일 */
+#deleteShipping {
+    background-color: white;
+    border: 0.5px solid #ccc;
+    width: 200px;
+    height: 50px;
+}
+
+#openEnrollShippingModal {
+    background-color: #7F7698;
+    color: white;
+    width: 200px;
+    height: 50px;
+    text-align: center;
+}
+
+#deleteShipping:hover {
+    background-color: #eee;
+}
+
+#openEnrollShippingModal:hover {
+    background-color: #493e5d;
+}

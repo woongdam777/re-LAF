@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/admin/adminOrder/ordercurrent.css">
+  <script src="https://kit.fontawesome.com/9c2aaccfe5.js" crossorigin="anonymous"></script>
+  <title>관리자 :: 주문현황</title>
+  <style>
+    .sidebar li.sub.adminOrder:not(.last) { height: 30px !important; }
+    .sidebar li.sub.adminOrder.last { height: 10px !important; }
+  </style>
+</head>
+<body>
+
+  <th:block th:replace="~{admin/adminHeader}"></th:block>
+  
+  <main>
+    <section class="admin-container">
+      <div class="order-current">
+        <div>
+          <span class="order-current-title">주문 현황</span>
+        </div>
+        <div class="order-table">
+          <div>
+            <span>오늘 주문 현황</span>
+            <div id="refresh">
+              <i class="fa-solid fa-arrows-rotate"></i>
+              <span>새로고침</span>
+            </div>
+          </div>
+          <table>
+            <tr>
+              <td>주문접수</td>
+              <td>결제확인</td>
+              <td>상품준비</td>
+              <td>출고완료</td>
+              <td>배송중</td>
+              <td>배송완료</td>
+              <td>취소중</td>
+              <td>취소완료</td>
+              <td>교환중</td>
+              <td>교환완료</td>
+              <td>반품중</td>
+              <td>반품완료</td>
+            </tr>
+            <tr id="orderState">
+              <td>0개</td>
+              <td>0개</td>
+              <td>0개</td>
+              <td>0개</td>
+              <td>0개</td>
+              <td>0개</td>
+              <td>0개</td>
+              <td>0개</td>
+              <td>0개</td>
+              <td>0개</td>
+              <td>0개</td>
+              <td>0개</td>
+            </tr>
+          </table>
+        </div>
+        <div class="recent-order-list">
+          <div class="recent-order-table-title">
+            <div>
+              <span>오늘 주문 목록</span>
+              <div id="bTreflesh">
+                <i class="fa-solid fa-arrows-rotate">
+                </i><span>새로고침</span>
+              </div>
+            </div>
+            <div>
+              <select id="orderStateC">
+                <option value="0">선택</option>
+                <option value="A">주문접수</option>
+                <option value="B">결제확인</option>
+                <option value="C">상품준비</option>
+                <option value="D">출고완료</option>
+                <option value="E">배송중</option>
+                <option value="F">배송완료</option>
+                <option value="G">취소중</option>
+                <option value="H">취소완료</option>
+                <option value="I">교환중</option>
+                <option value="J">교환완료</option>
+                <option value="K">반품중</option>
+                <option value="L">반품완료</option>
+              </select>
+              <button id="changeStateAllBtn" type="button">일괄수정</button>
+            </div>
+          </div>
+          <table class="recent-order-table">
+            <tr>
+              <td>
+                <input type="checkbox" name="" id="">
+              </td>
+              <td>
+                <p>주문일자</p>
+                <p>[주문번호]</p>
+              </td>
+              <td>이미지</td>
+              <td>상품정보</td>
+              <td>수량</td>
+              <td>상품구매금액</td>
+              <td>주문처리상태</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </section>
+    <th:block th:replace="~{admin/adminOrder/orderModal}"></th:block>
+  </main>
+
+  <script th:src="@{/js/admin/adminOrder/orderCurrent.js}"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+.mypageCoupon-mainFrame{
+    display: flex;
+    margin: 0 auto;
+    width: 1200px;
+}
+
+.mypageCoupon-dashFrame-myMain{
+    height: 482px;
+    width: 1020px;
+    padding-left: 50px;
+}
+
+.mypageCoupon-myMain-text{
+    font-weight: bold;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.sub-category-container {
+    margin: 30px 0;
+}
+
+.mypageCoupon-coupon-detail table{
+    padding: 20px 0 0 0;
+    width: 100%;
+    display: flex;
+}
+
+.mypageCoupon-coupon-detail tr{
+    border-bottom: 0.5px solid #eee;
+    height: 40px;
+}
+
+.mypageCoupon-detail-list td {
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+
+.mypageCoupon-detail-list td *{
+    font-size: 1.2rem;
+}
+
+
+/* 테이블 상부 글씨 */
+.mypageCoupon-coupon-detail-top {
+    display: flex;
+    justify-content: space-between;
+}
+
+.mypageCoupon-coupon-detail-top > div * {
+    display: inline-block
+}
+
+.mypageCoupon-coupon-detail-top > div:first-child {
+    font-weight: bold;
+}
+
+.mypageCoupon-coupon-detail tr:nth-child(1){
+    text-align: center;
+    background-color: #fafafa;
+}
+
+/* 각 열 속성 */
+.mypageCoupon-detail-list td:nth-child(1) {
+    width: 5%;
+}
+
+.mypageCoupon-detail-list td:nth-child(2) {
+    width: 30%;
+    padding-left: 10px;
+}
+
+.mypageCoupon-detail-list td:nth-child(3) {
+    width: 10%;
+}
+
+.mypageCoupon-detail-list td:nth-child(4) {
+    width: 12.5%;
+}
+
+.mypageCoupon-detail-list td:nth-child(5) {
+    width: 12.5%;
+}
+
+.mypageCoupon-detail-list td:nth-child(6) {
+    width: 30%;
+}
+
+.mypageCoupon-detail-list td:nth-child(6) > div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 0px 30px;
+}
+
+.pagination {
+    margin: 30px 0px !important;
+}
+
+.coupon-is-not-exists {
+    text-align: center;
+}

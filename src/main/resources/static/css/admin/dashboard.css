@@ -1,0 +1,275 @@
+
+/* order */
+.order{
+    width: 1200px;
+    /* height: 300px; */
+
+    margin: 20px;
+    padding: 30px 50px 50px;
+
+    border-radius: 30px;
+    box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.25);
+    background-color: white;
+}
+.order-table {
+    /* padding: 50px 70px; */
+}
+.order > div.title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-left: 5px;
+}
+.order > div.title span:nth-child(1){
+    display: inline;
+    font-size: 2.5rem;
+    margin-right: 10px;
+}
+
+#refresh {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+#refresh * {
+    font-size: 1.4rem;
+    color: #ccc;
+    font-weight: bold;
+    margin-right: 3px;
+    transition-duration: 0s;
+}
+#refresh:hover i {
+    transition-duration: 0.5s;
+}
+#refresh:active i {
+    transition-duration: 0s;
+    transform-origin:50% 50%;
+    transform: rotate(-360deg);
+}
+#refresh:active * {
+    color: #7f7698; 
+}
+
+.order-table table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.order-table table * {
+    text-align: center;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+}
+
+.order-table table tr:nth-child(1){
+    font-weight: bold;
+    background-color: #fafafa;
+}
+
+.order-table table td {
+    border: 1px solid #eee;
+    height: 40px;
+}
+
+
+/* today */
+.today {
+    display: flex;
+    margin: 20px;
+}
+
+.today-content {
+    display: flex;
+    margin-top: 20px;
+}
+
+.today-content-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    width: 250px;
+    border: 1px solid #eee;
+    border-right: none;
+    border-bottom: none;
+}
+.today-content-item:last-child {
+    border-right: 1px solid #eee;
+}
+.today-content-item * {
+    font-size: 2rem;
+}
+
+/* .today-img {
+    border-radius: 50%;
+    background-color: #fafafa;
+
+    width: 80px;
+    height: 80px;
+    margin: 20px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} */
+
+.today-img {
+    width: 80px;
+    height: 80px;
+    margin: 20px;
+}
+
+.today-content-item span{
+    margin-right: 10px;
+}
+
+.today-count {
+    color: #7f7698;
+    font-weight: bold;
+    margin-right: 10px;
+    background-image: linear-gradient(90deg,#7F769830,#7F769830);
+    background-position: bottom -5px left 0;
+    background-size: 100% 15px;
+    background-repeat: no-repeat;
+}
+
+.today-count-item{
+    font-size: 4rem;
+}
+
+/* today graph */
+.today-graph {
+    width: 1200px;
+    padding: 30px 50px 50px;
+    border-radius: 30px;
+    box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.25);
+    background-color: white;
+    margin-bottom: 20px;
+}
+
+.today-graph * {
+    width: 100%;
+    margin-bottom: 20px;
+}
+.today-graph .board-title {
+    margin-left: 0;
+}
+
+.board-title {
+    font-size: 2.5rem;
+    margin-left: 30px;
+}
+.board-title .info {
+    font-size: 12px;
+    color: #666;
+}
+
+.today-graph img {
+    height: 300px;
+    width: auto;
+}
+#graphTop {
+    display: flex;
+    justify-content: space-between;
+}
+#graphBtnContainer {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0;
+}
+#graphBtnContainer button {
+    width: 50px;
+    margin: 0;
+    border-right: none;
+    border-radius: 0;
+}
+#graphBtnContainer button:first-child {
+    border-radius: 5px 0 0 5px;
+}
+#graphBtnContainer button:last-child {
+    border-radius: 0 5px 5px 0;
+    border-right: 1px solid #ccc;
+}
+#graphBtnContainer button.cur {
+    background-color: #eee;
+}
+
+/* current */
+.current {
+    width: 1200px;
+    height: 400px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.current-left, .current-right {
+    width: 578px;
+    height: 400px;
+    padding: 30px 20px 20px;
+
+    border-radius: 30px;
+    box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.25);
+    background-color: white;  
+}
+
+.current-list {
+    /* padding: 30px; */
+    margin: 10px;
+    margin-top: 20px;
+}
+
+.current-list li {
+    display: flex;
+    height: 70px;
+    border-bottom: 1px solid #eee;
+}
+
+.current-list li:nth-child(1){
+    border-top: 1px solid #eee;
+}
+
+.current-list li div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.current-cat {
+    width: 200px;
+    background-color: #fafafa;
+}
+
+.current-count {
+    width: 500px;
+    justify-content: end !important;
+    padding-right: 50px;
+}
+
+.current-count-num{
+    font-size: 2rem;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+/* 카테고리별 판매량 */
+.chart-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 10px;
+}
+
+.current-left.chart {
+    width: 400px !important;
+}
+
+.current-right.chart {
+    width: 760px;
+}
+
+#memberChartContainer {
+    padding-left: 20px;
+    width: 700px;
+    height: 300px;
+}

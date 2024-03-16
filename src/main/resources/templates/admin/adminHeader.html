@@ -1,0 +1,108 @@
+<header>
+  <link rel="stylesheet" href="/css/common/default.css">
+  <link rel="stylesheet" href="/css/admin/adminCommon.css">
+  <div class="logo">
+    <a href="/"><img class="logo-img" src="/images/common/logo.png"></a>
+  </div>
+</header>
+
+<!-- sidebar -->
+<section class="sidebar">
+  <div class="sidebar-content">
+    <ul>
+      <a href="/admin"><li>대시보드</li></a>
+      <a href="/admin/banner"><li name="banner">메인 화면 관리</li></a>
+      <a href="/admin/banner"><li class="banner sub">메인 이미지 변경</li></a>
+      <a href="/admin/category"><li class="banner sub">카테고리 변경</li></a>
+      <a><li class="banner sub last"></li></a>
+      <a href="/admin/member"><li>회원 관리</li></a>
+      <a href="/admin/product"><li name="product">상품 관리</li></a>
+      <a href="/admin/product"><li class="product sub">상품 조회</li></a>
+      <a href="/admin/product/enroll"><li class="product sub">상품 등록</li></a>
+      <a><li class="product sub last"></li></a>
+      <a href="/admin/order/cur"><li name="adminOrder">주문 관리</li></a>
+      <a href="/admin/order/cur"><li class="adminOrder sub">오늘 주문 현황</li></a>
+      <a href="/admin/order"><li class="adminOrder sub">주문 조회</li></a>
+      <a><li class="adminOrder sub last"></li></a>
+      <a href="/review"><li>리뷰 관리</li></a>
+      <a href="/qna"><li>문의 관리</li></a>
+    </ul>
+  </div>
+  <div class="clock">
+    <div class="date_box">
+      <span id="year"></span>
+      <span class="point">.</span>
+      <span id="month"></span>
+      <span class="point">.</span>
+      <span id="date"></span>
+      <span id="day"></span>
+    </div>
+    <div class="time_box">
+        <span class="txt_lg" id="hours"></span>
+        <span class="mark">:</span>
+        <span class="txt_lg" id="min"></span>
+        <span class="mark">:</span>
+        <span class="txt_sm" id="sec"></span>
+    </div>
+  </div>
+</section>
+  
+
+<script src="/js/common/common.js"></script>
+<script th:inline="javascript">
+  // 서버 메시지 출력
+  const message = /*[[${message}]]*/ "전달 받은 message";
+  if(message !=null ) alert(message);
+
+  // 사이드바 드롭다운
+  const mainCategory = document.querySelectorAll('.sidebar-content li:not(.sub)');
+  for(let el of mainCategory) {
+
+    // 하위 카테고리 열기
+    el.addEventListener('mouseover', e => {
+      const name = e.target.getAttribute('name');
+      const subCategories = document.querySelectorAll('.sidebar-content li.sub');
+
+      for(let sub of subCategories) {
+        if(sub.classList.contains(name) && sub.classList.contains('last')) {
+          sub.style.height = '10px';
+        } else if(sub.classList.contains(name)) {
+          sub.style.height = '30px';
+        } else {
+          sub.style.height = '0px';
+        }
+      }
+    });
+  }
+  
+
+  
+  /* times */
+    
+  var clockStart = setInterval(function() {
+    var today = new Date()
+    var dayList = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+
+    var hh = addZero(today.getHours())
+    var mm = addZero(today.getMinutes())
+    var ss = addZero(today.getSeconds())
+
+    var YY = today.getFullYear()
+    var MM = today.getMonth()+1
+    var DD = today.getDate()
+    var dd = dayList[today.getDay()].toUpperCase()
+
+    document.getElementById('hours').innerText = hh
+    document.getElementById('min').innerText = mm
+    document.getElementById('sec').innerText = ss
+
+    document.getElementById('month').innerText = MM
+    document.getElementById('date').innerText = DD
+    document.getElementById('year').innerText = YY
+    document.getElementById('day').innerText = dd
+
+    function addZero(num) {
+        return (num < 10 ? '0'+num : ''+num)
+    }
+  }, 1000)
+</script>

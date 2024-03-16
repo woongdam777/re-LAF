@@ -1,0 +1,93 @@
+
+<link rel="stylesheet" th:href="@{/css/admin/adminOrder/orderModal.css}">
+<link rel="stylesheet" th:href="@{/css/order/orderDetail.css}">
+
+<!-- 회원 상세 모달창 -->
+<div class="order-modal-overlay" id="orderModalOverlay">
+  <div class="order-modal-window">
+    <div class="orderDetail-mainFrame">
+      <div class="orderDetail-mainFrame-order margin-to-zero">
+        <div class="order-enroll-title">
+          <span>주문 수정</span>
+        </div>
+        <div>주문정보</div>
+        <table>
+          <tr>
+            <th width="170px"><input type="hidden" id="modalOrderNo"> 주문번호</th>
+            <td width="300px" id="modalOrderUno">156343-14654456</td>
+            <th width="170px">주문일자</th>
+            <td id="modalOrderDate">2023-05-31 18:03:20</td>
+          </tr>
+          <tr>
+            <th>주문처리상태</th>
+            <td width="300px" id="modalOrderState">주문처리상태</td>
+            <th width="170px">주문상태수정</th>
+            <td>
+              <select id="modalOrderStateC">
+                <option value="0">선택</option>
+                <option value="A">주문접수</option>
+                <option value="B">결제확인</option>
+                <option value="C">상품준비</option>
+                <option value="D">출고완료</option>
+                <option value="E">배송중</option>
+                <option value="F">배송완료</option>
+                <option value="G">취소중</option>
+                <option value="H">취소완료</option>
+                <option value="I">교환중</option>
+                <option value="J">교환완료</option>
+                <option value="K">반품중</option>
+                <option value="L">반품완료</option>
+              </select>
+            </td>
+          </tr>
+        </table>
+        <!-- 결제 정보 -->
+        <div>결제정보</div>
+        <table class="orderDetail-order-payment">
+          <tr>
+            <th width="170px">총 주문금액</th>
+            <td width="300px" id="modalTotalPrice">35,500</td>
+            <th width="170px">총 결제금액</th>
+            <td id="modalPayment">35,500</td>
+          </tr>
+          <tr>
+            <th>결제수단</th>
+            <td id="modalPaymentMethod">결제수단/은행</td>
+          </tr>
+        </table>
+        <!-- 주문 상품 정보 -->
+        <div>주문 상품 정보</div>
+        <table class="orderDetail-order-info">
+          <tr>
+            <th width="90px">이미지</th>
+            <th width="450px">상품정보</th>
+            <th width="60px">수량</th>
+            <th width="100px">상품구매금액</th>
+          </tr>
+        </table>
+        <!-- 배송지 정보 -->
+        <div>배송지정보</div>
+        <table class="mypageDetail-order-shipping">
+          <tr>
+            <th>받으시는분</th>
+            <td id="modalOrderRecvName">받으시는분이름</td>
+            <th>휴대전화</th>
+            <td id="modalOrderRecvPhone">휴대전화</td>
+          </tr>
+          <tr>
+            <th>주소</th>
+            <td id="modalAdd" colspan="3">서울시 강남콩 카라라라 빌라 123-1234</td>
+          </tr>
+          <tr>
+            <th>배송메시지</th>
+            <td id="modalOrderRecvRequire" colspan="3">없음</td>
+          </tr>
+        </table>
+        <div class="order-modify-btn-area">
+          <button id="modalChangeBtn">수정</button>                     
+          <button class="order-modal-close">취소</button>                     
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

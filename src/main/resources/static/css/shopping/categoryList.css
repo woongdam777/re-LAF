@@ -1,0 +1,291 @@
+/* section header overridding */
+.section-header.best {
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+
+/* BEST ITEMS 섹션 */
+#categoryList-best-items {
+  height: 620px;
+  background-color: #F9F4F5;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.categoryList-section-container.best-item {
+  width: 900px;
+  max-height: 500px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 베스트상품 목록 */
+.categoryList-best-item {
+  display: inline;
+  position: relative;
+  width: 150px;
+  height: 210px;
+  margin: 15px 15px;
+}
+
+.categoryList-best-item img {
+  width: 150px;
+  height: 210px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 6px;
+}
+
+/* 사진 마우스 오버 시 출력되는 설명 */
+.hover-info {
+  position: absolute;
+  bottom: 0;
+
+  width: 100%;
+  height: 45%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  padding: 8px 12px;
+  background-color: rgba(255, 255, 255, 0.7);
+
+  pointer-events: none;
+}
+
+.hover-info * {
+  font-size: 1.2rem;
+}
+
+.hover-info .item-name {
+  line-height: 140%;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+.hover-info .item-price {
+  font-size: 1.6rem !important;
+  font-weight: bold;
+}
+
+.hover-info .item-price-origin {
+  color: #666;
+  text-decoration: line-through;
+}
+
+.hover-info .item-rieview-count {
+  line-height: 120%;
+  color: #666;
+}
+
+.hover-info .item-rieview-count>span {
+  color: #666;
+}
+
+.hover-info img {
+  display: block;
+  height: 10px;
+  width: auto;
+  margin: 0 5px 0 10px;
+}
+
+.hover-info .item-additional-info {
+  display: flex;
+  align-items: center;
+  margin-top: 3px;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.hover-info .item-additional-info * {
+  font-size: 1rem;
+  color: #666;
+}
+
+
+/* PRODUCTS LIST */
+#categoryList-product-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 30px;
+  min-width: 680px;
+}
+
+#categoryList-product-container * {
+  max-width: 1200px;
+}
+
+#categoryList-product-container .categoryList-section-title {
+  margin: 50px 0;
+}
+
+/* 아이템 목록 개수, 정렬방법 */
+.categoryList-product-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.product-count {
+  color: #999;
+}
+
+.product-count>span {
+  color: #666;
+  font-weight: bold;
+  font-size: 14pt;
+}
+
+.categoryList-order {
+  display: flex;
+}
+
+.categoryList-order a,
+.categoryList-order i {
+  color: #999;
+  font-size: 10pt;
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.categoryList-order i {
+  color: #999;
+  font-size: 10pt;
+  margin: 0 0 0 3px;
+  pointer-events: none;
+}
+
+.categoryList-order a.current,
+.categoryList-order a.current>i {
+  color: #666;
+  font-weight: bold;
+  font-size: 10pt;
+}
+
+/* 상품 이미지 */
+.categoryList-product-item-container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.categoryList-product-item {
+  margin: 40px 25px 0;
+  max-width: 250px !important;
+  position: relative;
+}
+
+.categoryList-product-item img {
+  width: 250px;
+  height: 350px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 10px;
+}
+
+.categoryList-product-item>img.like {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: inherit;
+  height: inherit;
+}
+
+
+/* 상품 정보 */
+.item-description-bottom-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 80px;
+}
+
+.item-description-bottom .item-name {
+  color: #666;
+  font-size: 1.4rem;
+  width: 100%;
+  word-break: break-all;
+  line-height: 140%;
+  word-break: break-all;
+}
+.item-description-bottom .item-price {
+  margin-top: 5px !important;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.item-description-bottom .item-price-discount {
+  color: #D66600;
+  font-size: 1.8rem;
+  margin: 0 2px;
+}
+
+.item-description-bottom .item-price-origin {
+  color: #666;
+  font-size: 1.4rem;
+  text-decoration: line-through;
+}
+
+.item-description-bottom img {
+  display: block;
+  height: 10px;
+  width: auto;
+  margin: 0 5px 0 10px;
+}
+
+.item-description-bottom .item-additional-info * {
+  font-size: 1.2rem;
+  color: #666;
+}
+.item-description-bottom .item-additional-info {
+  display: flex;
+  align-items: center;
+}
+
+
+/* 검색 결과 */
+#searchSection {
+  height: 250px;
+  background-color: #F9F4F5;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#searchSection > .section-title {
+  font-size: 1.6rem;
+  margin-bottom: 40px;
+}
+#searchSection > .section-title > span {
+  font-size: 2.2rem;
+  font-weight: bold;
+}
+#searchSection form {
+  display: flex;
+  align-items: center;
+}
+#searchSection form > input {
+  width: 500px;
+  height: 50px;
+  font-size: 1.4rem;
+  margin-right: 5px;
+}
+#searchSection form > button {
+  width: 100px;
+  height: 50px;
+  font-size: 1.4rem;
+}
+#categoryList-product-container {
+  padding-top: 50px;
+}

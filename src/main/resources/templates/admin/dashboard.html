@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/admin/dashboard.css">
+  <script src="https://kit.fontawesome.com/9c2aaccfe5.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>관리자 :: DASHBOARD</title>
+</head>
+<body>
+
+  <th:block th:replace="~{admin/adminHeader}"></th:block>
+  
+  <main>
+    <section class="admin-container">
+      <!-- 오늘 주문 현황 -->
+      <div class="order">
+
+        <div class="title">
+          <span>오늘 주문 현황</span>
+          <div id="refresh">
+            <i class="fa-solid fa-arrows-rotate"></i><span>새로고침</span>
+          </div>
+        </div>
+
+        <div class="today-content">
+          <div class="today-content-item">
+            <img class="today-img" src="/images/common/admin-cart.svg">
+            <div>
+              <p>오늘 주문접수</p>
+              <span class="today-count">0 건</span>
+            </div>
+          </div>
+          <div class="today-content-item">
+            <img class="today-img" src="/images/common/admin-cash.svg">
+            <div>
+              <p>오늘 결제확인</p>
+              <span class="today-count">0 KRW</span>
+            </div>
+          </div>
+          <div class="today-content-item">
+            <img class="today-img" src="/images/common/admin-calc.svg">
+            <div>
+              <p>오늘 매출</p>
+              <span class="today-count">0 KRW</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="order-table">
+          <table>
+            <tr>
+              <td>주문접수</td>
+              <td>결제확인</td>
+              <td>상품준비</td>
+              <td>출고완료</td>
+              <td>배송중</td>
+              <td>배송완료</td>
+              <td>취소중</td>
+              <td>취소완료</td>
+              <td>교환중</td>
+              <td>교환완료</td>
+              <td>반품중</td>
+              <td>반품완료</td>
+            </tr>
+            <tr id="orderState">
+              <td>0건</td>
+              <td>0건</td>
+              <td>0건</td>
+              <td>0건</td>
+              <td>0건</td>
+              <td>0건</td>
+              <td>0건</td>
+              <td>0건</td>
+              <td>0건</td>
+              <td>0건</td>
+              <td>0건</td>
+              <td>0건</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- 매출 추이 -->
+      <div class="today">
+        <div class="today-graph">
+          <span class="board-title">매출 추이</span>
+          <div id="graphBtnContainer">
+            <button type="button" class="cur" id="dayStatistics">30일</button>
+            <button type="button" id="monthStatistics">월별</button>
+            <button type="button" id="yearStatistics">연도별</button>
+          </div>
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </div>
+
+      <div class="current chart">
+        <div class="current-left chart">
+          <span class="board-title">카테고리별 판매량<span class="info">※ 직전 30일 기준</span></span>
+          <div class="chart-container"><canvas id="categoryChart"></canvas></div>
+        </div>
+
+        <div class="current-right chart">
+          <span class="board-title">회원 수 추이</span>
+          <div class="chart-container" id="memberChartContainer"><canvas id="memberChart"></canvas></div>
+        </div>
+      </div>
+
+
+
+      <div class="current">
+        
+        <div class="current-left">
+          <div>
+            <span class="board-title">상품현황</span>
+          </div>
+          <div class="current-list">
+            <ul>
+              <li>
+                <div class="current-cat">안전재고 미만</div>
+                <div class="current-count">
+                  <span class="current-count-num" th:text="${productStatistics[0]}">0</span>
+                  <span>개</span>
+                </div>
+              </li>
+              <li>
+                <div class="current-cat">판매중</div>
+                <div class="current-count">
+                  <span class="current-count-num" th:text="${productStatistics[1]}">0</span>
+                  <span>개</span>
+                </div>
+              </li>
+              <li>
+                <div class="current-cat">품절</div>
+                <div class="current-count">
+                  <span class="current-count-num" th:text="${productStatistics[2]}">0</span>
+                  <span>개</span>
+                </div>
+              </li>
+              <li>
+                <div class="current-cat">비공개</div>
+                <div class="current-count">
+                  <span class="current-count-num" th:text="${productStatistics[3]}">0</span>
+                  <span>개</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="current-right">
+          <div>
+            <span class="board-title">문의글현황</span>
+          </div>
+          <div class="current-list">
+            <ul>
+              <li>
+                <div class="current-cat">상품문의</div>
+                <div class="current-count">
+                  <span class="current-count-num" th:text="${qnaStatistics[1].count}">0</span>
+                  <span>개</span>
+                </div>
+              </li>
+              <li>
+                <div class="current-cat">배송문의</div>
+                <div class="current-count">
+                  <span class="current-count-num" th:text="${qnaStatistics[0].count}">0</span>
+                  <span>개</span>
+                </div>
+              </li>
+              <li>
+                <div class="current-cat">일반문의</div>
+                <div class="current-count">
+                  <span class="current-count-num" th:text="${qnaStatistics[2].count}">0</span>
+                  <span>개</span>
+                </div>
+              </li>
+              <li>
+                <div class="current-cat">총개수</div>
+                <div class="current-count">
+                  <span class="current-count-num" th:text="${qnaStatistics[0].count + qnaStatistics[1].count + qnaStatistics[2].count}">0</span>
+                  <span>개</span>
+                </div>
+              </li>
+            </ul>
+          </div>  
+        </div>
+      </div>
+
+
+    </section>
+
+  </main>
+
+  <script th:src="@{/js/admin/dashboard.js}"></script>
+
+</body>
+</html>

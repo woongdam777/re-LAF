@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.kh.laf.product.model.mapper.CategoryMapper">
+
+	<resultMap id="category_rm" type="Category">
+		<id property="parentCategoryNo" column="parent_category_no" />
+		<result property="parentCategoryName" column="parent_category_name" />
+		<result property="categoryOrder" column="parent_category_order" />
+		<result property="categoryNo" column="category_no" />
+		
+		<collection property="childCategoryList"
+			select="selectNavChildCategoryList"
+			column="parent_category_no"
+			javaType="java.util.ArrayList"
+			ofType="Category" />
+	</resultMap>
+	
+	<resultMap id="child_category_rm" type="Category">
+		<id property="categoryNo" column="child_category_no" />
+		<result property="categoryName" column="child_category_name" />
+		<result property="parentCategoryNo" column="parent_category_no" />
+	</resultMap>
+
+	<!-- Navigation 카테고리 조회 -->
+	<select id="selectNavCategoryList" resultMap="category_rm">
+		SELECT parent_category_no,
+			   parent_category_order,
+			   parent_category_name,
+			   parent_category_no as category_no 
+		FROM parent_category_cd
+		ORDER BY parent_category_order
+	</select>
+	
+	<!-- Navigation 자식 카테고리 조회 -->
+	<select id="selectNavChildCategoryList" resultMap="child_category_rm">
+		select 	child_category_no,
+				child_category_name,
+				child_category_order,
+				parent_category_no
+		from 	`child_category_cd`
+		where 	parent_category_no = ${categoryNo}
+		order by child_category_order
+	</select>
+
+	<!-- 부모 카테고리 이름 조회 -->
+	<select id="selectCategoryName">
+		select 	parent_category_name, parent_category_order
+		from 	`parent_category_cd` 
+		where 	parent_category_no = ${categoryNo}
+		order by parent_category_order
+	</select>
+	
+	<!-- 모든 카테고리 조회 -->
+	<select id="selectAllCategoryList">
+		(select  parent_category_no as category_no,
+				 parent_category_name as category_name,
+				 0 as parent_category_no,
+				 parent_category_order as category_order
+		from 	`parent_category_cd`	
+		order by parent_category_no)
+		union	 			
+		(select 	 child_category_no  as category_no,
+				 child_category_name as category_name,
+				 parent_category_no as parent_category_no,
+				 child_category_order as category_order
+		from 	`child_category_cd`
+		order by child_category_order)
+		order by category_order
+	</select>
+	
+	<!-- 부모 카테고리 조회 -->
+	<select id="selectCategoryList" resultType="Category">
+		select 	parent_category_no as category_no,
+				parent_category_name as category_name,
+				parent_category_order as category_order
+		from 	`parent_category_cd`
+		order by parent_category_order asc
+	</select>
+	
+	<!-- 자식 카테고리 조회 -->
+	<select id="selectChildCategoryList" resultType="Category">
+		select 	child_category_no as category_no,
+				child_category_name as category_name,
+				parent_category_no
+		from 	`child_category_cd`
+		where 	parent_category_no = ${categoryNo}
+		order by child_category_order asc
+	</select>
+	
+	<!-- 상품이 포함된 카테고리 조회 -->
+	<select id="selectCategoryListByProductList" resultType="map">
+		select 	`product_category`.product_no, 
+				`product_category`.parent_category_no,
+				 parent_category_name,
+				 parent_category_order
+		from 	`product_category` 
+				JOIN 		`parent_category_cd` ON `product_category`.parent_category_no = `parent_category_cd`.parent_category_no
+		<where>
+			<foreach collection="list" item="product" separator="or">
+				`product_category`.product_no = ${product.productNo}
+    		</foreach>	
+		</where>
+		order by parent_category_order
+	</select>
+	
+	<!-- 전체 자식 카테고리 목록 조회 -->
+	<select id="selectAllChildCategoryList" resultType="Category">
+		select 	 child_category_no as category_no,
+			 	 child_category_name as category_name,
+				 parent_category_no
+		from    `child_category_cd` 
+		order by child_category_order
+	</select>
+	
+	<!-- 상품 등록 중 카테고리 정보 등록 -->
+	<insert id="insertProductCategory">
+		insert into `product_category`
+		values
+		<foreach collection="list" item="item" separator=",">
+		(
+			${item.productNo},
+			${item.parentCategoryNo},
+			<if test="item.childCategoryNo == null">NULL</if> 
+			<if test="item.childCategoryNo != null">${item.childCategoryNo}</if>
+		)
+		</foreach>
+	</insert>
+	
+	<!-- 상품번호로 카테고리 목록 조회 -->
+	<select id="selectCategoryListByProductNo" resultType="Category">
+		select 	`product_category`.product_no, 
+				`product_category`.child_category_no as category_no,
+				 child_category_name as category_name,
+				`product_category`.parent_category_no as parent_category_no,
+				 parent_category_name,
+				 parent_category_order as category_order
+		from 	`product_category` 
+				 JOIN `parent_category_cd` ON `product_category`.parent_category_no = `parent_category_cd`.parent_category_no
+				 left join `child_category_cd` on `product_category`.child_category_no = `child_category_cd`.child_category_no
+		where    `product_category`.product_no = ${categoryNo}
+		order by category_order
+	</select>
+	
+	<!-- 상품번호로 카테고리 삭제 -->
+	<delete id="deleteProductCategory">
+		delete from `product_category`
+		where product_no = ${productNo}
+	</delete>
+	
+	<!-- 부모 카테고리 순서 업데이트 -->
+	<update id="updateParentCategory"> 
+	    UPDATE 	`parent_category_cd`
+	    SET		 parent_category_order=${categoryOrder}
+	    WHERE 	 parent_category_no=${categoryNo}
+	</update>
+	
+	<!-- 부모 카테고리 신규 추가 -->
+	<insert id="insertParentCategory" useGeneratedKeys="true" keyProperty="categoryNo" parameterType="Category">
+		insert into `parent_category_cd`
+		(
+			SELECT 	 NULL,
+					 #{categoryName},
+					 max(parent_category_order) + 1
+			FROM  	`parent_category_cd`
+		)
+	</insert>
+	
+	<!-- 부모 카테고리 삭제 -->
+	<delete id="deleteParentCategory">
+		delete from `parent_category_cd`
+		where parent_category_no=${categoryNo}
+	</delete>
+	
+	<!-- 자식 카테고리 순서 업데이트 -->
+	<update id="updateChildCategory">
+		UPDATE 	`child_category_cd`
+	    SET		 child_category_order=${categoryOrder}
+	    WHERE 	 child_category_no=${categoryNo}
+	</update>
+	
+	<!-- 자식 카테고리 신규 추가 -->
+	<insert id="insertChildCategory" useGeneratedKeys="true" keyProperty="categoryNo" parameterType="Category">
+		insert into `child_category_cd`
+		(
+			select 	 null,
+					 #{categoryName},
+					 ${parentCategoryNo},
+					 max(child_category_order) + 1
+			from 	`child_category_cd`
+			where 	 parent_category_no = ${parentCategoryNo}
+		)			
+	</insert>
+	
+	<!-- 자식 카테고리 삭제 -->
+	<delete id="deleteChildCategory">
+		delete from `child_category_cd`
+		where child_category_no=${categoryNo}
+	</delete>
+	
+	<!-- 카테고리별 판매량 조회 -->
+	<select id="getCategoryStatistics" resultType="map">
+		SELECT parent_category_name AS category, sum(`count`) AS count
+		FROM `order_product` 
+			JOIN `product_category` on `product_category`.product_no = `order_product`.product_no
+			JOIN `parent_category_cd` ON product_category.parent_category_no = parent_category_cd.parent_category_no
+		WHERE order_no IN (
+			SELECT order_no FROM `order` WHERE order_date >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+		)
+		GROUP BY parent_category_name
+		order by count desc
+	</select>
+	
+</mapper>
+

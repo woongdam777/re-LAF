@@ -1,0 +1,183 @@
+.mypageDash-mainFrame{
+    display: flex;
+    margin: 0 auto;
+    width: 1200px;
+}
+
+.mypageDash-mainFrame-dashFrame{
+    display: flex;
+    position: relative;
+    vertical-align: baseline;
+}
+
+.mypageDash-dashFrame-myMain{
+    height: 482px;
+    width: 1020px;
+    margin: 80px 0 0 30px;
+}
+.mypageDash-myMain-myInfo{
+    display: flex;
+    background-color: #fafafa;
+    width: 1020px;
+    height: 226px;
+    padding: 50px 0;
+}
+
+.mypageDash-myInfo-myRating{
+    display: flex;
+    width: 60%;
+    height: 126px;
+    padding:  0 50px 0 50px;
+    
+}
+
+.mypageDash-myRating-Rating{
+    font-size: 2.0rem;
+    width: 126px;
+    height: 126px;
+    background-color: #fff;
+    text-align: center;
+    line-height: 126px;
+    border-radius: 50%;
+    box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+}
+
+.mypageDash-myRating-greeting{
+    margin: 0 0 0 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.mypageDash-greeting-greet{
+    font-size: 15px;
+    padding: 10px 0 5px 0;
+}
+
+
+
+/* 포인트 및 쿠폰 내역 */
+.mypageDash-myInfo-mySave{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-left: 1px solid white;
+    width: 40%;
+    height: 100%;
+}
+
+.mypageDash-mySave-Point{
+    justify-content: space-between;
+    padding: 20px;
+    display: flex;
+    font-weight: bold;
+}
+
+#mypageDashCoupon {
+    font-size: 2.0rem;
+}
+
+.mypageDashPoint {
+    font-size: 2.0rem;
+}
+
+.mypageDash-myMain-Shipping{
+    border: 0.5px solid #eee;
+    margin: 25px 0 0 0;
+    width: 1020px;
+    background-color: white;
+}
+
+.mypageDash-Shipping-state{
+    display: flex;
+}
+
+/* 나의 주문 처리 현황 */
+.mypageDash-state-shippingList{
+    padding: 20px;
+    width: 70%;
+    border-right: 0.5px solid #eee;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.mypageDash-shippingList-list{
+    padding: 10px 0 0 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+
+.square-list-square{
+    display: block;
+    background-color: #eee;
+    height: 100px;
+    width: 100px;
+    margin: 10px;
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+}
+
+.square-list-square > div{
+    font-size: 13px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.square-list-square > div > div:first-child {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+
+/* 취소 교환 반품 주문 건 */
+.mypageDash-state-howMany{
+    width: 30%;
+    color: #666;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+}
+
+.mypageDash-state-howMany > div {
+    width: 60%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.mypageDash-state-howMany > div > span {
+    margin-right: 10px;
+}
+
+.mypageDash-howMany-shipping{
+    margin: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.mypageDash-howMany-shipping > div{
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.mypageDash-howMany-shipping > div > span:first-child {
+    font-size: 2.0rem;
+    font-weight: bold;
+    margin-right: 10px;
+    height: 100%;
+}
+
+
+.mypageDash-howMany-shipping > span{
+    align-self: center;
+}

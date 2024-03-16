@@ -1,0 +1,114 @@
+.mypagePoint-mainFrame{
+    display: flex;
+    margin: 0 auto;
+    width: 1200px;
+}
+
+.mypagePoint-dashFrame-myMain{
+    height: 580px;
+    width: 1020px;
+    padding-left: 50px;
+}
+
+.mypagePoint-myMain-text{
+    font-weight: bold;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.sub-category-container {
+    margin: 30px 0;
+}
+
+.mypagePoint-point-statistics{
+    border: 3px solid #eee;
+    display: flex;
+}
+
+.mypagePoint-point-statistics >div{
+    justify-content: space-around;
+    width: 50%;
+    display: block;
+    padding: 15px 40px;
+}
+
+.mypagePoint-statistics-content div{
+    padding: 3px;
+    display: flex;
+    justify-content: space-between
+}
+
+
+.mypagePoint-point-detail table{
+    padding: 20px 0 0 0;
+    width: 100%;
+    display: flex;
+}
+
+.mypagePoint-point-detail th{
+    background-color: #fafafa;
+    border: 0.5px solid #eee;
+    font-size: 1.2rem;
+}
+
+.mypagePoint-point-detail tr{
+    border-bottom: 0.5px solid #eee;
+    height: 40px;
+}
+
+.mypagePoint-point-detail tr:nth-child(1){
+    text-align: center;
+    background-color: #fafafa;
+}
+
+.mypagePoint-detail-list td {
+    padding: 0 10px 0 0;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+
+
+/* 적립금 내역 테이블 */
+/* 각 행별 설정 */
+.mypagePoint-detail-list td:nth-child(1) {
+    width: 10%;
+}
+.mypagePoint-detail-list td:nth-child(2) {
+    width: 10%;
+}
+.mypagePoint-detail-list td:nth-child(3) {
+    width: 10%;
+}
+
+.mypagePoint-detail-list td:nth-child(4) {
+    width: 10%;
+}
+
+.mypagePoint-detail-list td:nth-child(5) * {
+    font-size: 1.2rem;
+}
+
+.mypagePoint-detail-list td:nth-child(5) {
+    width: 20%;
+}
+
+.mypagePoint-detail-list td:nth-child(6) {
+    width: 40%;
+}
+
+.pagination {
+    margin: 30px 0px !important;
+}
+
+/* 적립금 내역 상부 마진 조정 */
+body > main > section > div > div.mypagePoint-myMain-point > div.mypagePoint-point-statistics {
+    margin-bottom: 10px;
+}
+
+.point-is-not-exists {
+    text-align: center;
+}
+

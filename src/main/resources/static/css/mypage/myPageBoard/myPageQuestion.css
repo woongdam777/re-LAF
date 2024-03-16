@@ -1,0 +1,105 @@
+/* 마이페이지 qna 전체 프레임 */
+.mypageQuestion-mainFrame{
+    display: flex;
+    margin: 0 auto;
+    width: 1200px;
+}
+
+.mypageQuestion-mainFrame-myMain{
+    width: 1020px;
+    margin-left: 50px;
+}
+
+.mypageQuestion-myMain-text{
+    font-weight: bold;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+.mypageQuestion-MyMain-Question>div>select{
+    display:inline-block;
+}
+
+/*  마이페이지 테이블 구간 */
+.mypageQuestion-MyMain-Question table{
+    padding: 10px 0 0 0;
+    width: 100%;
+    display: flex;
+}
+
+.mypageQuestion-MyMain-Question th{
+    background-color: #fafafa;
+    border: 1px solid #eee;
+    font-size: 12px;
+}
+
+.mypageQuestion-MyMain-Question tr{
+    border: 1px solid #eee;
+    height: 40px;
+    cursor: pointer;
+}
+.mypageQuestion-Question-list td.hover {
+    background-color: #fafafa;
+    transition-duration: 0.2s;
+}
+.mypageQuestion-Question-list td {
+    border: 1px solid #fafafa;
+    font-size: 12px;
+    text-align: center;
+}
+.mypageQuestion-Question-list td:nth-child(3) {
+    padding-left: 10px;
+    text-align: left;
+}
+
+/* 마이페이지 qna 검색 */
+.mypageQuestion-Question-search{
+    display: flex;
+    justify-content: center;
+}
+.mypageQuestion-Question-search button{
+    background-color: #eee;
+    margin-left: 10px;
+}
+.mypageQuestion-Question-search select{
+
+    background-color: #fafafa;
+    border: 1px solid #eee;
+    text-align: center;
+    width: 100px;
+    margin-right: 10px;
+}
+.mypageQuestion-Question-search input{
+    border: 1px solid #eee;
+    width: 350px;
+}
+
+/* mypageQuestionAnswered디스플레이 none */
+#mypageQuestionAnswered{
+    display:none;
+}
+
+.mypageQuestion-MyMain-Question > div:nth-child(1) {
+    display: flex;
+    justify-content: space-between;
+}
+
+.mypageQuestion-MyMain-Question > div > div:nth-child(2) > * {
+    margin-left: 5px;
+}
+
+.question-is-not-exists {
+    text-align: center;
+}
+
+#mypageQuestionRecent tr:nth-child(1){
+    text-align: center;
+    background-color: #fafafa;
+}
+
+#writeQna{
+    margin-left: 900px;
+    margin-top: 10px;
+    display: flex;
+}

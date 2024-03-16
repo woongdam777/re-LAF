@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="http://www.lost-and-found.store/">
+  <meta property="og:title" content="LostAndFound">
+  <meta property="og:image" content="http://www.lost-and-found.store/images/common/ogimg.jpg">
+  <meta property="og:description" content="심플하고 편안한 디자인으로 고객이 자신만의 스타일을 발견할 수 있는 여성복 쇼핑몰">
+  <meta property="og:site_name" content="LostAndFound">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <title>LAF</title>
+
+  <link rel="stylesheet" th:href="@{css/main.css}">
+  <link rel="stylesheet" th:href="@{css/shopping/productListItem.css}">
+</head>
+<body>
+  
+  <th:block th:replace="~{common/header}"></th:block>
+  <th:block th:replace="~{common/nav}"></th:block>
+  
+  <!-- 메인 배너(슬라이드) -->
+  <section class="slide_wrap">
+    <div class="slide_box">
+      <ul class="slide_list clearfix">
+        
+        <li class="slide_content" th:each="banner : ${bannerList}">
+          <!-- <a th:href="@{product/{productNo}(productNo = ${banner.productNo})}"> -->
+            <img class="main-banner-img" th:src="${banner.imgPath}">
+          <!-- </a> -->
+        </li>
+        
+      </ul>
+    </div> <!-- slide_box -->
+    
+    <button class="slide_btn_prev" type="button">
+      <img th:src="@{images/common/allowBtnLeft-white.svg}">
+    </button>
+    
+    <button class="slide_btn_next" type="button">
+      <img th:src="@{images/common/allowBtnRight-white.svg}">
+    </button>
+    
+    <!-- slide_pagination -->
+    <ul class="slide_pagination"></ul>
+
+    <!-- banner 슬라이드 관련 js -->
+    <script th:src="@{js/main/banner.js}"></script>
+  </section>
+
+  <main>
+
+    <!-- 추천상품 -->
+    <!-- <section class="main-product">
+      <div class="main-product-left">
+        <a href="#">
+          <img class="mainBannerImg" th:src="@{/images/sample/sample5.png}">
+        </a>
+      </div>
+      <div class="main-product-right">
+        <a href="#">
+          <img class="mainBannerImg" th:src="@{/images/sample/sample6.png}">
+        </a>
+      </div>
+    </section> -->
+
+    <!-- MD 추천상품(아치) -->
+    <section class="md-recommend slide_wrap_sub">
+      <div class="md-recommend-left">
+        <p>MD<br>Recommend<br>Product</p>
+        <p>daily look<br>made by<br>L&F</p>
+        <div class="md-recommend-btn">
+          <button class="md-recommend-lbtn slide_btn_prev_sub" type="button">
+            <img th:src="@{/images/common/allowBtnLeft-666.svg}">
+          </button>
+          <button class="md-recommend-rbtn slide_btn_next_sub" type="button">
+            <img th:src="@{images/common/allowBtnRight-666.svg}">
+          </button>
+        </div>
+      </div>
+        <div class="slide_box_sub md-recommend-right">
+          <ul class="slide_list_sub clearfix md-recommend-list">
+            <li class="slide_content_sub" th:each="product : ${mdList}">
+              <th:block th:replace="~{shopping/productListItem}"></th:block>
+            </li>
+          </ul>
+        </div>
+    </section>
+
+    <!-- 위클리 베스트 -->
+    <section class="weekly">
+      <div class="weekly-title">
+        <div>
+          <span>WEEKLY BEST</span>
+        </div>
+
+        <!-- 카테고리 선택 -->
+        <div>
+          <button type="button" no="1" class="current">Top</button>
+          <button type="button" no="2">Pants</button>
+          <button type="button" no="3">Outer</button>
+          <button type="button" no="9">Acc</button>
+        </div>
+      </div>
+
+      <!-- 상품목록 -->
+      <div id="weeklyProductContainer">
+        <div class="weekly-product" th:each="product : ${weeklyBest}">
+          <th:block th:replace="~{shopping/productListItem}"></th:block>
+        </div>
+      </div>
+    </section>
+    
+    <!-- 새로 도착한 상품 -->
+    <section class="sub-section new">
+      <div class="sub-section-title">NEW ARRIVAL</div>
+
+      <div class="sub-section-content slide_wrap_sub-2">
+        <ul class="sub-section-list slide_list_sub">
+          <li class="slide_content_sub" th:each="product : ${newArrivals}">
+            <th:block th:replace="~{shopping/productListItem}"></th:block>
+          </li>
+        </ul>
+
+        <button class="slide_btn_prev slide_btn_prev_sub" type="button">
+          <img th:src="@{images/common/allowBtnLeft-white.svg}">
+        </button>
+        <button class="slide_btn_next slide_btn_next_sub" type="button">
+          <img th:src="@{images/common/allowBtnRight-white.svg}">
+        </button>
+
+      </div>
+
+    </section>
+    
+    <!-- 개인 맞춤 추천 -->
+    <section class="sub-section only">
+      <div class="sub-section-title">ONLY FOR YOU</div>
+      
+      <div class="sub-section-content slide_wrap_sub-2">
+        <ul class="sub-section-list slide_list_sub">
+          <li class="slide_content_sub" th:each="product : ${personalList}">
+            <th:block th:replace="~{shopping/productListItem}"></th:block>
+          </li>
+        </ul>
+        
+        <button class="slide_btn_prev slide_btn_prev_sub" type="button">
+          <img th:src="@{images/common/allowBtnLeft-white.svg}">
+        </button>
+        <button class="slide_btn_next slide_btn_next_sub" type="button">
+          <img th:src="@{images/common/allowBtnRight-white.svg}">
+        </button>
+      </div>
+      
+    </section>
+
+  </main>
+  
+  <th:block th:replace="~{common/footer}"></th:block>
+  <script th:src="@{js/main/main.js}"></script>
+  <script th:src="@{js/main/MDslide.js}"></script>
+  <script th:src="@{js/shopping/productListItem.js}"></script>
+</body>
+</html>

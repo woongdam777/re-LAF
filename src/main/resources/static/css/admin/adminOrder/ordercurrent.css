@@ -1,0 +1,179 @@
+.order-current{
+  width: 1200px;
+
+  margin: 0 30px 30px;
+  padding: 30px;
+
+  border-radius: 30px;
+  box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.25);
+  background-color: white;
+}
+
+.order-current-title{
+  font-size: 2.5rem;
+}
+
+.order-table{
+  padding: 50px 70px;
+}
+.order-table>div{
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.order-table span:nth-child(1){
+  display: inline;
+  font-size: 2rem;
+  margin-right: 10px;
+}
+
+#refresh * {
+  font-size: 1.4rem;
+  color: #ccc;
+  font-weight: bold;
+  margin-right: 3px;
+  transition-duration: 0s;
+  cursor: pointer;
+}
+
+#refresh:hover i {
+  transition-duration: 0.5s;
+}
+#refresh:active i {
+  transition-duration: 0s;
+  transform: rotate(-360deg);
+}
+#refresh:active * {
+  color: #7f7698; 
+}
+
+.order-table table{
+  width: 100%;
+}
+
+.order-table table *{
+  text-align: center;
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+}
+
+.order-table table tr:nth-child(1){
+  font-weight: bold;
+  background-color: #fafafa;
+}
+
+.order-table table td{
+  border: 1px solid #eee;
+  height: 40px;
+}
+
+/* .recent-order-list */
+.recent-order-list{
+  padding: 20px 70px;
+}
+
+.recent-order-table-title>div:nth-child(1){
+  display: flex;
+  align-items: center;
+}
+
+.recent-order-table-title>div:nth-child(1)>span{
+  font-size: 2rem;
+  margin-right: 10px;
+}
+
+#bTreflesh * {
+  font-size: 1.4rem;
+  color: #ccc;
+  font-weight: bold;
+  margin-right: 3px;
+  transition-duration: 0s;
+  cursor: pointer;
+}
+
+#bTreflesh:hover i {
+  transition-duration: 0.5s;
+}
+#bTreflesh:active i {
+  transition-duration: 0s;
+  transform: rotate(-360deg);
+}
+#bTreflesh:active * {
+  color: #7f7698; 
+}
+
+.recent-order-table-title{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+  border: 1px ;
+}
+
+.recent-order-table-title button{
+  width: 100px;
+  height: 30px;
+  background-color: #7f7698;
+  color: white;
+
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+}
+
+/* product-select-bottom */
+.recent-order-table{
+  width: 100%;
+  margin-bottom: 10px;
+  border: 1px solid #eee;
+}
+
+.recent-order-table tr{
+  height: 50px;
+  border-bottom: 1px solid #eee;
+}
+
+.recent-order-table td{
+  padding: 10px;
+  border-left: 1px solid #eee;
+}
+
+.recent-order-table tr:nth-child(1){
+  background-color: #fafafa;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.recent-order-table td:nth-child(1),
+.recent-order-table td:nth-child(2),
+.recent-order-table td:nth-child(5),
+.recent-order-table td:nth-child(6),
+.recent-order-table td:nth-child(7){
+  text-align: center;
+}
+
+.recent-order-table td:nth-child(1){
+  pointer-events: inherit;
+}
+
+.recent-order-table input{
+  margin-right: 5px;
+}
+
+.recent-order-table img{
+  width: 50px;
+}
+
+.recent-order-table td:nth-child(3)>div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.recent-order-table td:nth-child(4) p{
+  width: 230px;
+}
+
+.recent-order-table td:nth-child(4) p:nth-child(2){
+  color: #ccc;
+  margin-top: 5px;
+}

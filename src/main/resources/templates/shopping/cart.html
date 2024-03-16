@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Expires" content="-1" />
+  <link rel="stylesheet" th:href="@{/css/dev/productList.css}">
+  <link rel="stylesheet" th:href="@{/css/shopping/cart.css}">
+  <title>LAF :: 장바구니</title>
+</head>
+<body>
+
+  <th:block th:replace="~{common/header}"></th:block>
+  <th:block th:replace="~{common/nav}"></th:block>
+  
+  <main>
+    <!-- 섹션 헤더(제목, 설명) -->
+    <div class="section-header">
+      <div class="section-title">장바구니</div>
+    </div>
+
+    <!-- 장바구니 목록 -->
+    <form th:action="@{/cart/order}" method="POST" id="cartFrm">
+      <section id="cartItemList">
+        <table>
+          <tr>
+            <td class="cart-item-checkbox"><input type="checkbox" name="checkbox" id="checkboxSelectAll"></td>
+            <td class="cart-item-image">이미지</td>
+            <td class="cart-item-product">상품정보</td>
+            <td class="cart-item-count">수량</td>
+            <td class="cart-item-price-set">상품금액</td>
+            <td class="cart-item-point">적립금</td>
+            <td class="cart-item-choose">삭제</td>
+          </tr>
+
+          <tr th:if="${#lists.size(productList) == 0}">
+            <td colspan="7" class="cart-item-empty">장바구니가 비어 있습니다.</td>
+          </tr>
+          
+          <tr th:unless="${#lists.size(productList) == 0}" th:each="product : ${productList}" class="data-tr">
+
+            <input type="hidden" name="productNo" th:value="${product.productNo}">
+            <input type="hidden" name="optionNo" th:value="${optionList[productStat.index].optionNo}">
+            <input type="hidden" name="count" th:value="${cartList[productStat.index].count}">
+            
+            <td class="cart-item-checkbox">
+              <input th:if="${optionList[productStat.index].stock > 0}" type="checkbox" name="checkbox" class="checkbox-item">
+              <input th:unless="${optionList[productStat.index].stock > 0}" type="checkbox" name="checkbox" class="checkbox-item" disabled>
+            </td>
+            
+            <td class="cart-item-image">
+              <a th:href="@{/product/{productNo}(productNo = ${product.productNo})}">
+                <img th:src="${product.thumbnailPath}">
+              </a>
+            </td>
+            
+            <td class="cart-item-product">
+              <a th:href="@{/product/{productNo}(productNo = ${product.productNo})}" 
+                th:text="${product.productName}">상품명</a>
+              <p class="cart-item-product-option">
+                <button class="option-change-btn" type="button" th:if="${optionList[productStat.index].stock > 0}">옵션변경</button>
+                <button class="option-change-btn" type="button" th:unless="${optionList[productStat.index].stock > 0}" disabled>옵션변경</button>
+
+                <!-- 사이즈가 있는 상품 -->
+                <span class="cart-item-selected-option" 
+                  th:unless="${optionList[productStat.index].size == null} or ${optionList[productStat.index].size == 1}"
+                  th:text="|[옵션 : ${optionList[productStat.index].color} / ${optionList[productStat.index].size}]|">옵션정보</span>
+
+                <!-- 사이즈가 없는 상품(원사이즈) -->
+                <span class="cart-item-selected-option"
+                  th:if="${optionList[productStat.index].size == null} or ${optionList[productStat.index].size == 1}"
+                  th:text="|[옵션 : ${optionList[productStat.index].color}]|">옵션정보</span>
+              </p>
+            </td>
+            
+            <!-- 정상 상태 -->
+            <td class="cart-item-count" th:if="${optionList[productStat.index].stock > 0} and ${optionList[productStat.index].stock >= cartList[productStat.index].count}">
+              <!-- <div class="count-btn-container"> -->
+                <button type="button" class="minus-btn">-</button>
+                <span class="count" th:text="${cartList[productStat.index].count}" th:max="${optionList[productStat.index].stock}">주문수량</span>
+                <button type="button" class="plus-btn">+</button>
+              <!-- </div> -->
+            </td>
+
+            <!-- 재고 부족 상태 -->
+            <td class="cart-item-count" th:if="${optionList[productStat.index].stock > 0} and ${optionList[productStat.index].stock lt cartList[productStat.index].count}">
+              <!-- <div class="count-btn-container"> -->
+                <button type="button" class="minus-btn">-</button>
+                <span th:text="${cartList[productStat.index].count}" th:max="${optionList[productStat.index].stock}" class="count out-of-stock-2">주문수량</span>
+                <button type="button" class="plus-btn">+</button>
+              <!-- </div> -->
+              <span class="out-of-stock-3">재고부족</span>
+            </td>
+
+            <!-- 품절 상태 -->
+            <td class="cart-item-count" th:unless="${optionList[productStat.index].stock > 0}">
+              <span class="out-of-stock">품절</span>
+            </td>
+            
+            <td class="cart-item-price-set">
+              <div class="cart-item-price" th:text="${#numbers.formatInteger(product.productSalePrice, 3, 'COMMA')}">판매금액(할인가)</div>
+              <div class="cart-item-price-origin" th:unless="${product.productSale == 0}" 
+                th:text="${#numbers.formatInteger(product.productPrice, 3, 'COMMA')}">원가</div>
+            </td>
+            
+            <td class="cart-item-point" th:text="${#numbers.formatInteger(product.productPoint, 1, 'COMMA')}">포인트</td>
+            
+            <td class="cart-item-choose">
+              <button  type="button" th:product='${product.productNo}' 
+                th:option='${optionList[productStat.index].optionNo}'>삭제하기</button>
+            </td>
+          
+          </tr>
+
+        </table>
+
+        <div class="btn-container">
+          <button type="button" id="emptyStockRemoveBtn"><span>품절</span>상품 일괄삭제</button>
+          <button type="button" id="deleteSelectedBtn">선택상품삭제</button>
+          <button type="button" id="clearCartBtn">장바구니비우기</button>
+        </div>
+        
+        
+      </section>
+      
+      
+      <!-- 결제예상금액 -->
+      <section id="cartPrice">
+        <table>
+          <tr class="table-header">
+            <td class="cart-price-total-origin">총 상품금액</td>
+            <td class="cart-price-shipping">배송비</td>
+            <td class="cart-price-total-discount">총 할인금액</td>
+            <td class="cart-price-total-payment">결제예정금액</td>
+          </tr>
+          <tr class="table-data">
+            <td class="cart-price-total-origin data">0</td>
+            <td class="cart-price-shipping">+ 3,000</td>
+            <td class="cart-price-total-discount">- 0</td>
+            <td class="cart-price-total-payment">0</td>
+          </tr>
+        </table>
+        
+        <div class="btn-container">
+          <button id="orderSelectedBtn">선택상품주문</button>
+          <button class="submit" id="orderAllBtn">전체상품주문</button>
+        </div>
+      </section>
+    </form>
+    
+    <!-- 추천상품 -->
+    <section class="sub-section" id="proudctRecommandItem">
+      <div class="sub-section-title">RECOMMEND ITEM</div>
+      <div class="sub-section-desc">이 상품과 함께 구매하면 좋을 상품 추천드립니다 :-)</div>
+      <div class="sub-section-content slide_wrap_sub-2">
+        <ul class="sub-section-list slide_list_sub">
+          <li class="slide_content_sub" th:each="product : ${recommendList}">
+            <th:block th:replace="~{shopping/productListItem}"></th:block>
+          </li>
+        </ul>
+        
+        <button class="slide_btn_prev slide_btn_prev_sub" type="button">
+          <img th:src="@{/images/common/allowBtnLeft-white.svg}">
+        </button>
+        <button class="slide_btn_next slide_btn_next_sub" type="button">
+          <img th:src="@{/images/common/allowBtnRight-white.svg}">
+        </button>
+      </div>
+    </section>
+    
+  </main>
+
+
+  <!-- 옵션 변경 드롭다운 모달 -->
+  <div class="bubble-overlay hidden">
+    <div class="bubble">
+      <svg height="12" viewBox="0 0 25 12" width="25" class="x10l6tqk xng853d xu8u0ou" fill="var(--card-background)" style="transform: scale(1, -1) translate(0px, 0px);">
+        <path d="M24.553.103c-2.791.32-5.922 1.53-7.78 3.455l-9.62 7.023c-2.45 2.54-5.78 1.645-5.78-2.487V2.085C1.373 1.191.846.422.1.102h24.453z"></path>
+      </svg>
+      <div class="bubble-container">
+        <select name="colorChange" id="colorChangeSelector">
+          <option class="bubble-content" value="none" selected>색상</option>
+        </select>
+        <!-- <select name="sizeChange" id="sizeChangeSelector">
+          <option class="bubble-content" value="none" selected>사이즈</option>
+        </select> -->
+      </div>
+    </div>
+  </div>
+  
+  
+  <th:block th:replace="~{common/footer}"></th:block>
+  
+  <script th:src="@{/js/shopping/cart.js}"></script>
+  <script th:src="@{/js/shopping/productListItem.js}"></script>
+</body>
+</html>

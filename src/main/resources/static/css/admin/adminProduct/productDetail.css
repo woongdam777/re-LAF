@@ -1,0 +1,378 @@
+.product-enroll {
+  width: 1200px;
+  padding: 30px 30px 50px 30px;
+  border-radius: 30px;
+  box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.25);
+  background-color: white;
+}
+
+.product-enroll-title {
+  font-size: 2.5rem;
+}
+.enroll-container {
+  width: 95%;
+  margin: 50px auto;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+.enroll-table-header {
+  text-align: center;
+}
+
+/* enroll-top-table */
+.enroll-top-table {
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.enroll-top-table tr {
+  border-bottom: 1px solid #eee;
+  height: 38px;
+}
+
+.enroll-top-table td {
+  padding: 6px 10px;
+  min-height: 38px;
+}
+
+.enroll-top-table input:not(.checkbox) {
+  margin-right: 5px;
+  height: 27px;
+}
+
+.checkbox {
+  height: auto;
+  margin: 0 5px 0 10px;
+}
+
+.enroll-top-table tr:nth-child(1) > td:nth-child(1){
+  background-color: #fafafa;
+  width: 220px;
+}
+
+.enroll-top-table tr:nth-child(2) > td:nth-child(1){
+  padding: 5px 0;
+}
+
+.table-header {
+  background-color: #fafafa;
+  border-left: 1px solid #eee;
+  width: 120px;
+}
+
+
+/* 썸네일 */
+.table-header.thumbnail {
+  border-left: none;
+}
+.enroll-thumbnail {
+  text-align: center;
+}
+.enroll-top-table img {
+  height: 210px;
+  width: 170px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  margin: auto;
+}
+.enroll-img-btn {
+  text-align: center;
+}
+#enrollImgBtn, #deleteImgBtn {
+  width: 80px;
+}
+#enrollImgBtn {
+  margin-right: 2px;
+}
+.enroll-img-btn input[type="file"] {
+  display: none;
+}
+
+/* 상품명 */
+#productName {
+  width: 100%;
+}
+
+/* 카테고리 */
+#enrollCategory select {
+  display: block;
+  width: 275px;
+}
+#enrollCategory select:first-child {
+  margin-bottom: 5px;
+}
+#selectedCategory {
+  height: 38px;
+}
+#selectedCategory > span:not(.info) {
+  display: inline-block;
+  padding: 3px 5px;
+  margin-right: 5px;
+  font-size: 1.2rem;
+  border-radius: 4px;
+  background-color: #eee;
+}
+#selectedCategory > span:not(.info):hover {
+  background-color: #ccc;
+  transition-duration: 0.2s;
+  cursor: pointer;
+} 
+#selectedCategory > span.info {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+/* 가격 */
+.enroll-price span {
+  display: inline-block;
+  width: 80px;
+  margin-left: 10px;
+}
+.enroll-price span.data {
+  display: inline-block;
+  width: 120px;
+  text-align: right;
+  margin-right: 10px;
+}
+.enroll-price input[type='text'] {
+  width: 250px;
+  text-align: right;
+}
+.enroll-price .alert100 {
+  color: red !important;
+  width: auto;
+}
+.enroll-price label + span.info,
+.enroll-point label + span.info {
+  display: inline-block;
+  font-size: 1.2rem;
+  color: #666;
+  width: 200px;
+  margin-left: 5px;
+}
+
+/* 적립금 */
+.enroll-point input[type='text'] {
+  width: 340px;
+  text-align: right;
+}
+.enroll-point span.data {
+  display: inline-block;
+  width: 220px;
+  text-align: right;
+  margin-right: 10px;
+}
+
+/* 옵션 정보 입력 테이블 */
+#optionBtnContainer {
+  float: right;
+}
+#optionBtnContainer button:not(:last-child) {
+  margin: 5px 0;
+}
+
+.middle-table-checkbox { width: 10%; }
+.middle-table-size { width: 25%; }
+.middle-table-color { width: 30%; }
+.middle-table-stock { width: 25%; }
+.middle-table-hidden { width: 10%; }
+
+.enroll-middle-table{
+  width: 100%;
+}
+
+.enroll-middle-table td {
+  text-align: center;
+}
+
+.enroll-middle-table tr{
+  height: 38px;
+  border-top: 1px solid #eee;
+}
+
+.enroll-middle-table tr:last-child{
+  border-bottom: 1px solid #eee;
+}
+
+.enroll-middle-table input[type=text]{
+  width: 90%;
+  margin-right: 5px;
+  text-align: center;
+}
+
+.enroll-middle-table select {
+  width: 80%;
+}
+
+.enroll-middle-table tr:nth-child(1){
+  background-color: #fafafa;
+}
+
+/* 사이즈 */
+.enroll-middle-table #oneSizeCheckbox {
+  height: auto;
+}
+.enroll-middle-table input:disabled {
+  background-color: #eee;
+}
+
+/* enroll-bottom-table */
+.enroll-bottom-table {
+  margin-top: 50px;
+  width: 100%;
+}
+
+.enroll-bottom-table td {
+  height: 38px;
+  padding: 2px 10px;
+}
+
+.enroll-bottom-table tr {
+  border-top: 1px solid #eee;
+}
+.enroll-bottom-table .table-header {
+  border-left: none;
+}
+.enroll-bottom-table #uploadDetailImgBtn {
+  float: right;
+}
+
+.enroll-bottom-table img{
+  width: 700px;
+}
+.enroll-bottom-table input[type="file"] {
+  display: none;
+}
+
+.enroll-bottom-table tr:nth-child(1) > td:nth-child(1)>div{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.enroll-bottom-table td:nth-child(1) {
+  width: 800px;
+}
+
+.enroll-detail-img-btn button {
+  width: 80px;
+  height: 30px;
+}
+#noDetailImgInfo {
+  color: #666;
+}
+#detailImgNameTr {
+  text-align: center;
+}
+#detailImgNameTr td {
+  padding: 5px 10px;
+  text-align: left;
+}
+#detailImgNameTr .detailImgNameContainer {
+  margin: 5px 0;
+}
+#detailImgNameTr button {
+  height: 20px;
+  width: 20px;
+}
+#detailImgNameTr button.up {
+  margin-right: 5px;
+}
+#detailImgNameTr button:last-child {
+  float: right;
+}
+#detailImgNameTr span {
+  margin-left: 10px;
+}
+#detailImgTr {
+  text-align: center;
+}
+.detailImgContainer {
+  position: relative;
+  display: inline-block;
+}
+.rmImgBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.enroll-bottom-table tr:nth-child(2) > td:nth-child(2) {
+  display: flex;
+  align-items: start;
+  justify-content: center;
+}
+
+.enroll-completted-btn {
+  display: flex;
+  justify-content: center;
+}
+
+/* 최종 등록 버튼 */
+#enrollSubmitBtnContainer {
+  display: flex;
+  justify-content: center;
+}
+#enrollSubmitBtn, #enrollSubmitBtnTop {
+  height: 30px;
+  width: 100px;
+  border-radius: 2px;
+  color: white;
+  background-color: #7f7698;
+}
+#enrollSubmitBtnTop {
+  display: inline-block;
+}
+
+/* 상품 상세 조회 모달창 */
+/* 모달창 오버레이 */
+.product-modal-overlay {
+  position: fixed;
+  left: 0;
+  top: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 101;
+
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+
+/* 모달창 */
+.product-modal-window {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  width: 1200px;
+  height: 500;
+
+  padding: 40px;
+
+  text-align: left;
+
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+
+  transform: translateX(-50%) translateY(-50%);
+
+  display: flex;
+  flex-direction: column;
+
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+
+.member-modal-window::-webkit-scrollbar {
+  display: none;
+}

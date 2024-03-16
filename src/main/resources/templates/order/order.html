@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" th:href="@{/css/order/order.css}">
+  <link rel="stylesheet" href="/css/order/orderShipping.css">
+  <title>LAF :: 주문정보</title>
+</head>
+<body>
+  <th:block th:replace="~{common/header}"></th:block>
+  <th:block th:replace="~{common/nav}"></th:block>
+  <th:block th:replace="~{order/orderShipping}"></th:block>
+  <th:block th:replace="~{order/orderCoupon}"></th:block>
+  
+  <main>
+    <!-- 개인화면 대쉬보드 전체 틀 -->
+    <section th:object="${orderMember}" class="mypageOrder-mainFrame">
+      <form id="orderSubmit" th:action="@{/order}" method="post">
+        <div class="mypageOrder-order-text">주문 정보</div>
+        <!-- 주문 정보 -->
+        <div class="mypageOrder-mainFrame-order">
+          <div>주문 정보</div>
+          <table>
+            <tr>
+              <th width="100px">주문자</th>
+              <td>
+                <input name="orderName" id="orderName" type="text" th:value="*{memberName}">
+                <input type="hidden" name="memberNo" th:if="*{memberNo}" th:value="*{memberNo}">
+              </td>
+            </tr>
+            <tr>
+              <th>이메일</th>
+              <td>
+                <input name="orderEmail" id="orderEmail"  type="text" th:value="*{memberEmail}">
+              </td>
+            </tr>
+            <tr class="mypageOrder-order-tel">
+              <th>휴대전화</th>
+              <td>
+                <input name="orderTel" id="orderTel" type="text" th:value="*{memberPhone}">
+              </td>
+            </tr>
+            <tr>
+              <th>주소<input type="hidden" name="orderAdd"></th>
+              <td>
+                <!-- 주소 api 이용 (스크립트) -->
+                <div class="mypageSignUp-table-address">
+                  <input type="text" class="mypageSignUp-address-postal" name="memberAddress" placeholder="우편번호" maxlength="6" id="order_postcode" readonly>
+                  <button type="button" onclick="sample6_execDaumPostcode('order')">주소검색</button>
+                </div>
+                <div class="mypageSignUp-table-address">
+                  <input type="text" name="memberAddress" placeholder="  기본 주소" id="order_address" readonly>
+                </div>
+                <div class="mypageSignUp-table-address">
+                  <input type="text" name="memberAddress" placeholder="  나머지 주소" id="order_detailAddress">
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th rowspan="3">환불정보</th>
+              <td>
+                <input name="refundName" id="refundName" type="text" th:value="*{refundName}" placeholder="예금주">
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <select id="refundBank" name="paymentBank">
+                  <option value="1">국민은행</option>
+                  <option value="2">농협은행</option>
+                  <option value="3">우리은행</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <input id="refundAccount" name="refundAccount" type="text" th:value="*{refundAccount}" placeholder="계좌번호">
+              </td>
+            </tr>
+          </table>
+        </div>
+        <!-- 배송지 -->
+        <div class="mypageOrder-mainFrame-order">
+          <div>배송지</div>
+          <table>
+            <tr class="mypageOrder-order-shipping">
+              <td colspan="2">
+                <div>
+                  <div>
+                    <input type="radio" name="orderShippingRadio" id="orderDetailSame" ><label for="orderDetailSame">주문자 정보와 동일</label>
+                    <input type="radio" name="orderShippingRadio" id="orderDetailNew" checked><label for="orderDetailNew">새로운 배송지</label>
+                  </div>
+                  <button type="button" th:if="${session.loginMember}" id="orderDetailShipping">배송지 관리</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th width="100px">받는 사람</th>
+              <td><input type="text" name="orderRecvName" id="orderRecvName"></td>
+            </tr>
+            <tr>
+              <th>주소<input type="hidden" name="orderRecvAdd"></th>
+              <td>
+                <!-- 주소 api 이용 (스크립트) -->
+                <div class="mypageSignUp-table-address">
+                  <input type="text" class="mypageSignUp-address-postal" name="receiverAddress" placeholder="우편번호" maxlength="6" id="recv_postcode" readonly>
+                  <button type="button" onclick="sample6_execDaumPostcode('recv')">주소검색</button>
+                </div>
+                <div class="mypageSignUp-table-address">
+                  <input type="text" name="receiverAddress" placeholder="  기본 주소" id="recv_address" readonly>
+                </div>
+                <div class="mypageSignUp-table-address">
+                  <input type="text" name="receiverAddress" placeholder="  나머지 주소" id="recv_detailAddress">
+                </div>  
+              </td>
+            </tr>
+            <tr class="mypageOrder-order-tel">
+              <th>휴대전화</th>
+              <td>
+                <input id="recvTel" type="text" name="orderRecvPhone">
+              </td>
+            </tr>
+            <tr class="mypageOrder-order-tel">
+              <th>주문요청사항</th>
+              <td>
+                <input type="text" name="orderRecvRequire" placeholder="요청사항을 적어주세요">
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="mypageOrder-mainFrame-order">
+        <div>주문 상품 정보</div>
+          <table class="mypageOrder-order-info" id="mypageOrderProduct">
+            <tr>
+              <th width="70px"></th>
+              <th width="70px">이미지</th>
+              <th width="600px">상품정보</th>
+              <th width="50px">수량</th>
+              <th width="100px">상품구매금액</th>
+              <th width="80px">할인금액</th>
+            </tr>
+            <tr th:each="order : ${orderList}">
+              <td>
+                <input class="productPoint" type="hidden" th:value=${order.product.productPoint}>
+              </td>
+              <td width="70px"><img width="70px" th:src="${order.product.thumbnailPath}"></td>
+              <td>
+                <div id="productName" th:text="${order.product.productName}">상품명</div>
+                <div th:text="${order.option.size}?${order.option.color} + ' | '+${order.option.size}:${order.option.color}">[옵션 : 내츄럴 크림]</div>
+              </td>
+              <td th:text="${order.count}">구매수량</td>
+              <td th:text="${#numbers.formatInteger(order.product.productPrice, 3, 'COMMA')}">상품구매금액</td>
+              <td th:unless="${(order.product.productPrice - order.product.productSalePrice) == 0}" th:text="'-' + ${#numbers.formatInteger(order.product.productPrice - order.product.productSalePrice, 3, 'COMMA')} + '원'" class="mypageOrderDiscountRed">할인금액</td>
+            </tr>
+            <tr>
+              <td colspan="6">
+                <div>
+                  <div>총금액(상품할인적용)</div>
+                  <div id="totalPrice">0원</div>
+                </div>
+                <div th:if="${session.loginMember}">
+                  <div>예상적립금</div>
+                  <div id="productPoint">0원</div>
+                  <input type="hidden" name="pointNoGain">
+                </div>
+                <div>
+                  <div>
+                    <span>배송비</span>
+                    <span>(100,000원 이상 결제 시 무료배송!)</span>
+                  </div>
+                  <div id="deliveryPrice">+3,000원</div>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="mypageOrder-mainFrame-order">
+          <div>할인/부가결제</div>
+          <table class="mypageOrder-order-info" id="mypageOrderDiscount">
+            <tr>
+              <th>상품 할인</th>
+              <th id="totalDiscount">0</th>
+            </tr>
+            <tr th:if="${session.loginMember}" >
+              <th>쿠폰 할인 (보유쿠폰 <div th:text="${#lists.size(couponList)}">0</div>개)</th>
+              <th>
+                <input type="hidden" name="couponNo" id="couponNo" value="0">
+                <div><span id="couponDiscount">0</span>원</div>
+                <button type="button" id="orderDetailCoupon">쿠폰적용</button>
+              </th>
+            </tr>
+            <tr th:if="${session.loginMember}" >
+              <th>
+                적립금 (보유잔액 <div id="memberPoint" th:if="*{memberPoint}" th:text="*{#numbers.formatInteger(memberPoint, 3, 'COMMA')}"></div><div id="memberPoint" th:unless="*{memberPoint}">0</div>원)
+                <span>
+                  <button id="pointBtn" type="button">전액사용</button>
+                </span>
+              </th>
+              <th>
+                <div><input name="usePoint" id="usePoint" type="text" th:max="*{memberPoint}">원</div>
+                <button id="applyPointBtn" type="button">할인적용</button>
+                <input type="hidden" name="pointNoUse" value="0">
+              </th>
+            </tr>
+            <tr>
+              <th>할인 적용 금액</th>
+              <th>
+                <div class="mypageOrderDiscountRed" id="applyDiscount" value="0">-0원</div>
+                <button id="discountClearBtn" type="button">적용취소</button>
+              </th>
+            </tr>
+          </table>
+        </div>
+        <div class="mypageOrder-mainFrame-order">
+          <div>결제정보</div>
+          <!-- 주문총가격 -->
+          <input type="hidden" name="orderTotalPrice">
+          <!-- 결제총가격 -->
+          <input type="hidden" name="orderPayment">
+          
+          <table class="mypageOrder-order-info" id="mypageOrderInfo">
+            <tr>
+              <th>주문상품</th>
+              <th id="totalAmount">0</th>
+            </tr>
+            <tr>
+              <th>배송비</th>
+              <th id="totalDelivery">0원</th>
+            </tr>
+            <tr>
+              <th>할인</th>
+              <th class="mypageOrderDiscountRed" id="payDiscount">0원</th>
+            </tr>
+            <tr>
+              <th class="mypageOrderFontBold">최종 결제 금액</th>
+              <th id="payment">0</th>
+            </tr>
+          </table>
+        </div>
+        <div class="mypageOrder-mainFrame-order">
+          <div>
+            결제수단
+            <input type="hidden" name="payment" value="1">
+          </div>
+          <table class="mypageOrder-order-info" id="mypageOrderHow">
+            <tr>
+              <th>
+                <div>
+                  <input type="radio" name="payHow" id="pay1" checked><label for="pay1"><span>무통장입금</span></label>
+                  <input type="radio" name="payHow" id="pay2"><label for="pay2"><span>일반결제</span></label>
+                  <input type="radio" name="payHow" id="pay3"><label for="pay3"><span>카카오페이</span></label>
+                </div>
+              </th>
+            </tr>
+            <tr id="inputPay1">
+              <th>
+                <div>
+                  <div>입금은행</div>
+                  <select>
+                    <!-- <option value="">■■■::: 선택해 주세요. :::■■■ </option> -->
+                    <option>국민은행: 9999-9999-9999</option>
+                  </select>
+                </div>
+                <div>
+                  <div>입금자명</div>
+                  <input name="paymentName" id="paymentName" type="text" placeholder="입금하시는 분의 성함을 적어주세요">
+                </div>
+              </th>
+            </tr>
+          </table>
+        </div>
+        <div class="mypageOrderTerms">
+          <div>
+            <input type="checkbox" id="agreePay">구매조건 확인 및 결제진행 동의
+            <div>
+              <pre th:insert="~{member/termsAndConditions :: terms3}"></pre>
+            </div>
+          </div>
+          <div>
+            <input type="checkbox" id="agreePay">배송 및 상품 방침 동의 (취소,반품,교환, 환불 등)
+            <div>
+              <pre th:insert="~{member/termsAndConditions :: terms4}"></pre>
+            </div>
+          </div>
+          <div>
+            <input type="checkbox" id="agreePayAll">주문 내용을 확인하였으며 약관에 동의합니다.
+          </div>
+        </div>
+        <div class="submitBtn"><button id="paymentBtn">0원 결제하기</button></div>
+      </form>
+    </section>
+  </main>
+  <th:block th:replace="~{common/footer}"></th:block> 
+
+  
+  <script th:inline="javascript">
+    const orderMember = /*[[${orderMember}]]*/ "주문자 회원정보";
+    const orderList = /*[[${orderList}]]*/ "주문상품정보";
+    const addressList = /*[[${addressList}]]*/ "주문상품정보";
+  </script>
+
+  <script src="/js/order/order.js"></script>
+
+  <!-- 주소 api -->
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script src="/js/common/api/address.js"></script>
+
+  <!-- jQuery -->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+  <!-- iamport.payment.js -->
+  <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+    
+</body>
+</html>

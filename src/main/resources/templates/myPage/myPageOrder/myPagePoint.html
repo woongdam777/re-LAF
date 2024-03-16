@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/mypage/myPageOrder/myPagePoint.css">
+  <title>LAF :: 적립금 및 쿠폰</title>
+</head>
+<body>
+  <th:block th:replace="~{common/header}"></th:block>
+  <th:block th:replace="~{common/nav}"></th:block>
+  
+  <main>
+    <section class="mypagePoint-mainFrame">
+      <th:block th:replace="~{myPage/myPageSide}"></th:block>
+        <!-- 마이페이지 중앙 대쉬보드 -->
+        <div class="mypagePoint-dashFrame-myMain">
+          <!-- 등급 확인 및 적립금 예치금 쿠폰 -->
+          <div class="section-header">
+            <div class="section-title">적립금</div>
+          </div>
+            <!-- 하위 메뉴 -->
+            <div class="sub-category-container">
+              <!-- 현재 카테고리에 current 클래스 추가 -->
+              <a href="/myPage/point"><div class="sub-category current">적립금 내역</div></a>
+              <a href="/myPage/coupon"><div class="sub-category">보유중인 쿠폰</div></a>
+            </div>
+
+
+            <div class="mypagePoint-point-statistics">
+              <div class="mypagePoint-statistics-content">
+                <div>
+                  <div>누적 적립금</div>
+                  <div th:if="${accumulatedPoint != 0}" th:text="|${#numbers.formatInteger(accumulatedPoint, 3, 'COMMA')} 원|">누적 적립액</div>
+                  <div th:unless="${accumulatedPoint != 0}" th:text="|${accumulatedPoint} 원|">누적 적립액</div>
+                </div>
+              </div>
+              <div class="mypagePoint-statistics-content">
+                <div>
+                  <div>사용가능 적립금</div>
+                  <div th:if="${session.loginMember.memberPoint != 0}" th:text="|${#numbers.formatInteger(session.loginMember.memberPoint, 3, 'COMMA')} 원|">사용가능 적립액</div>
+                  <div th:unless="${session.loginMember.memberPoint != 0}" th:text="|${session.loginMember.memberPoint} 원|">사용가능 적립액</div>
+                </div>
+                <div>
+                  <div>사용한 적립금</div>
+                  <div th:if="${accumulatedUsedPoint != 0}" th:text="|${#numbers.formatInteger(accumulatedUsedPoint, 3, 'COMMA')} 원|">사용한 적립액</div>
+                  <div th:unless="${accumulatedUsedPoint != 0}" th:text="|${accumulatedUsedPoint} 원|">사용한 적립액</div>
+                </div>
+              </div>
+            </div>
+            <div class="mypagePoint-point-detail">
+              <table>
+                <tr>
+                  <td width="120px">적립일</td>
+                  <td width="120px">만료일</td>
+                  <td width="120px">적립/사용</td>
+                  <td width="120px">적립금</td>
+                  <td width="300px">관련 주문</td>
+                  <td width="430px">내용</td>
+                </tr>
+                <!-- 항목 추가 -->
+                <!-- 적립 내역이 없을 때 -->
+                <tr th:if="${#lists.size(pointList) == 0}">
+                  <td colspan="5" class="point-is-not-exists">적립 내역이 존재하지 않습니다.</td>
+                </tr>
+                <!-- 적립 내역이 있을 때 -->
+                <tr th:unless="${#lists.size(pointList) == 0}" class="mypagePoint-detail-list" th:each="point : ${pointList}">
+                  <td th:text="${#strings.substring(point.pointDate,0,11)}">적립일</td>
+                  <td th:text="${#strings.substring(point.pointDueDate,0,11)}">만료일</td>
+                  <td th:if='${point.pointSort == "G"}' th:text="적립">적립된 적립금일 경우</td>
+                  <td th:if='${point.pointSort == "U"}' th:text="사용">사용된 적립금일 경우</td>
+                  <td th:if='${point.pointSort == "C"}' th:text="취소">사용된 적립금일 경우</td>
+                  <td th:text="${#numbers.formatInteger(point.pointAmount, 3, 'COMMA')} + '원'">적립금</td>
+                  <td th:if="${point.orderUno}"><a th:href="'/order/'+${point.orderNo}"><p th:text="|[${point.orderUno}]|">관련 주문</p></a></td>
+                  <td th:unless="${point.orderUno}"></td>
+                  <td th:text="${point.pointContent}">내용</td>
+                </tr>
+              </table>
+              <!-- 페이징 -->
+              <div class="pagination-area">
+                <ul th:unless="${#lists.size(pointList) == 0}" class="pagination">
+                  <!-- 첫 페이지로 이동 -->
+                  <li><a th:href="@{/myPage/point(cp=1)}">
+                      <img th:src="@{/images/common/paging/first-page.svg}">
+                    </a></li>
+
+                  <!-- 이전 목록 마지막 번호로 이동 -->
+                  <li><a th:href="@{/myPage/point(cp=${pagination.prevPage})}">
+                      <img th:src="@{/images/common/paging/prev-page.svg}">
+                    </a></li>
+
+                  <!-- 특정 페이지로 이동 -->
+                  <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage, 1)}">
+                    <!-- 현재 보고있는 페이지 -->
+                    <li th:if="${i == pagination.currentPage}">
+                      <a class="current" th:text="${i}">현재 페이지</a>
+                    </li>
+
+                    <!-- 현재 페이지를 제외한 나머지 -->
+                    <li th:unless="${i == pagination.currentPage}">
+                      <a th:href="@{/myPage/point(cp=${i})}" th:text="${i}"></a>
+                    </li>
+                  </th:block>
+
+                  <!-- 다음 목록 시작 번호로 이동 -->
+                  <li><a th:href="@{/myPage/point(cp=${pagination.nextPage})}">
+                      <img th:src="@{/images/common/paging/next-page.svg}">
+                    </a></li>
+
+                  <!-- 끝 페이지로 이동 -->
+                  <li><a th:href="@{/myPage/point(cp=${pagination.maxPage})}">
+                      <img th:src="@{/images/common/paging/last-page.svg}">
+                    </a></li>
+                </ul>
+              </div>
+            </div>
+      
+          </div>
+        </div>
+      </section>
+  </main>
+
+  <th:block th:replace="~{common/footer}"></th:block>
+</body>
+</html>

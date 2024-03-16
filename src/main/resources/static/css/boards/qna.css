@@ -1,0 +1,404 @@
+/* 게시글 */
+.list-table tr {
+  height: 35px;
+  cursor: pointer;
+}
+
+.list-table > tbody > tr{
+  border-bottom: 0.5px solid #ccc;
+}
+
+.list-table tr > *{ text-align: center; font-size: 1.2rem;}
+.list-table tr > *:nth-of-type(1){ width: 10%; }
+.list-table tr > *:nth-of-type(2){ width: 10%; }
+
+.list-table tr > td:nth-of-type(3){
+   width: 50%; 
+   text-align: left;
+   padding-left: 30px;
+   text-decoration: none;
+}
+
+.list-table tr > *:nth-of-type(4){ 
+  width: 15%; 
+  overflow: hidden;
+}
+.list-table tr > *:nth-of-type(4)> span{
+  display: flex; 
+  align-items: center;
+  justify-content: left;
+  padding-left: 5px;
+}
+.list-table tr > *:nth-of-type(5){ width: 20%; }
+
+.list-table td.hover {
+  background-color: #fafafa;
+  transition-duration: 0.2s;
+}
+
+
+
+/* 게시판 상세 */
+/* 게시판 상세 상단 */
+.detail-list-table {
+  width: 100%;
+  border-top: 0.5px solid #ccc;
+}
+
+.detail-list-table tr {
+  height: 30px;
+  border-bottom: 0.5px solid #ccc;
+  /* cursor: pointer; */
+}
+
+.detail-list-table > tr {
+  border-bottom: 0.5px solid #ccc;
+}
+
+.detail-list-table tr > * { text-align: center; font-size: 1.2rem;}
+.detail-list-table tr > *:nth-of-type(1){ 
+  width: 10%; 
+  background-color: #eee;
+}
+
+.detail-list-table tr > td:nth-of-type(2){
+  width: 70%; 
+  text-align: left;
+  padding-left: 20px;
+  text-decoration: none;
+}
+.qnaMemberGrade{
+  height: 25px;
+  width: 25px;
+}
+
+/* 작성 시 카테고리 none */
+#qnaWriteProduct{
+  display:none;
+}
+#qnaWriteShipping{
+  display: none;
+}
+
+/* 게시판 상세 본문 */
+.detail-list-contents {
+  width: 80%;
+  padding: 40px 20px;
+
+  border-bottom: 0.5px solid #ccc;
+}
+
+/* 게시판 상세 버튼 */
+.detail-btn-area {
+  width: 80%;
+  height: 30px;
+  margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+
+/* 답변하기 버튼(관리자용) */
+.btn-container {
+  padding: 5px 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  width: 80%;
+}
+  
+.btn-container > button {
+  width: 120px;
+  height: 40px;
+  margin-left: 5px;
+  border-radius: 0px;
+}
+
+
+
+
+ /* 게시판 글쓰기 */
+.write-list-contents > textarea{
+  width: 100%;
+  height: 500px;
+  margin-top: 10px;
+
+  resize: none;
+  border: 0.5px solid #ccc;
+
+}
+
+.write-btn {
+  border-radius: 3px;
+}
+
+.write-btn-area {
+  margin-top: 0px;
+}
+
+.detail-list-table input {
+  width: 97%;
+  border: none;
+  outline: none;
+}
+
+/* 1대1문의 답변 */
+
+.detail-question-answer {
+  width: 80%;
+  border-bottom: 0.5px solid #ccc;
+}
+
+.detail-question-prev {
+  width: 100%;
+  height: 30px;
+  padding: 5px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  text-align: center;
+  cursor: pointer;
+}
+
+.detail-question-prev:hover {
+  background-color: #fafafa;
+  transition-duration: 0.2s;
+}
+
+
+div.detail-question-prev > pre{
+  font-size: 1.2rem;
+  color: #ccc;
+}
+
+.detail-question-all {
+  display: none;
+}
+
+div.detail-question-all > pre{
+  width: 80%;
+  padding: 40px 20px;
+}
+
+
+/* 게시판 글쓰기 */
+.write-list-contents > textarea{
+width: 100%;
+height: 500px;
+margin-top: 10px;
+
+resize: none;
+border: 0.5px solid #ccc;
+
+}
+
+.write-btn {
+border-radius: 3px;
+}
+
+.write-btn-area {
+margin-top: 0px;
+}
+
+.detail-list-table input {
+width: 97%;
+border: none;
+outline: none;
+}
+
+#qnaWriteLockBtn{
+  cursor:pointer;
+width: 20px;
+border: 0.5px solid #eee;
+}
+
+
+#qnaWriteLockText{
+font-size: 1.2rem;
+color: hsl(0, 0%, 44%);
+display: flex;
+align-items: center;
+}
+
+#qnaWriteLockText > label{
+font-size: 1.2rem;
+color: hsl(0, 0%, 44%);
+}
+
+#qnaModelBack{
+  display: none;
+  z-index: 1000;
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+
+}
+#qnaModal{ 
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  z-index: 1001;
+  border: 0.5px solid #eee;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+  width: 200px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#qnaModal *{
+  margin: 2px;
+}
+#qnaModal button{
+  width: 100px;
+  letter-spacing: 3px;
+}
+/* 수정하기 비밀번호 모달 */
+
+#qnaDetailModelBack{
+  display: none;
+  z-index: 1000;
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+
+}
+#qnaDetailModal{ 
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  z-index: 1001;
+  border: 0.5px solid #eee;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+  width: 200px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#qnaDetailModal *{
+  margin: 2px;
+}
+#qnaDetailModal button{
+  width: 100px;
+  letter-spacing: 3px;
+}
+/* 삭제하기 */
+#qnaDeleteModelBack{
+  display: none;
+  z-index: 1000;
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+
+}
+#qnaDeleteModal{ 
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  z-index: 1001;
+  border: 0.5px solid #eee;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+  width: 200px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#qnaDeleteModal *{
+  margin: 2px;
+}
+#qnaDeleteModal button{
+  width: 100px;
+  letter-spacing: 3px;
+}
+
+/* qna input부분 */
+#qnaOrderList{
+  z-index: 7;
+  position: absolute;
+  background-color: #eee;
+  border-radius: 10px;
+  height: 0px;
+  overflow : auto;
+  transition-duration: 0.5s;
+}
+#qnaProductList{
+  height: 0px;
+  z-index: 222;
+  position: absolute;
+  background-color: #eee;
+  border-radius: 10px;
+  overflow : auto;
+  transition-duration: 0.5s;
+}
+
+.qnaOrder{
+  display: flex;
+  padding: 5px;
+}
+.qnaOrder:hover{
+  background-color: #ccc;
+  cursor:pointer;
+}
+.qnaOrder > div:first-child{
+  display: flex;
+  width: 135px !important;
+}
+
+.qnaProduct{
+  display: flex;
+  padding: 5px;
+  align-items: center;
+}
+
+.qnaProduct:hover{
+  background-color: #ccc;
+  cursor:pointer;
+}
+
+.qnaProduct > div:nth-child(1){
+  display: flex;
+  width: 100px !important;
+}
+
+#qnaModalBack{
+  z-index: 5;
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.productImg{
+  height: 30px;
+  width: 30px;
+}
+
+#qnaText{
+  padding: 20px;
+}

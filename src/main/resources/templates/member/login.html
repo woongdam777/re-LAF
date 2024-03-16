@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/member/login.css">
+  <title>LAF :: 로그인</title>
+</head>
+<body>
+  <th:block th:replace="~{common/header}"></th:block>
+  <th:block th:replace="~{common/nav}"></th:block>
+  
+  <main>
+    <!-- 개인화면 대쉬보드 전체 틀 -->
+    <section class="mypageLogin-login">
+      <div><!-- 회원 로그인 방식 분류 -->
+        <div class="mypageLogin-login-memberLogin">
+          <div class="login-title">회원 로그인</div>
+          <form action="" method="post">
+            <div class="mypageLogin-memberLogin-member">
+              <div>ID</div>
+              <input th:if="${saveId}" style="border:none" size="70" type="text" name="memberId" th:value="${saveId}">
+              <input th:unless="${saveId}" style="border:none" size="70" type="text" name="memberId">
+            </div>
+            <div class="mypageLogin-memberLogin-member">
+              <div>Password</div>
+              <input style="border:none" size="70" type="password" name="memberPw">
+            </div>
+            <div class="mypageLogin-memberLogin-other">
+              <div>
+                <input th:if="${saveId}" type="checkbox" name="saveId" checked="true">
+                <input th:unless="${saveId}" type="checkbox" name="saveId">
+                <span>아이디 저장</span>
+              </div>
+              <div><a href="/findpw">비밀번호 찾기</a></div>
+            </div>
+            <button id="mypageLoginLogin" class="mypage-button mypage-login-button">LOGIN</button>
+          </form>
+          <div>
+            <div id="kakaoHover">
+              <a href="https://kauth.kakao.com/oauth/authorize?client_id=2616eaa0abdd9c27b7d00ec1a536aaee&redirect_uri=http://lost-and-found.store/auth/kakao/callback&response_type=code">
+                <div></div>
+                <img src="/images/common/kakao.png">
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="mypageLogin-login-notMember">
+          <div class="login-title">비회원 주문조회</div>
+          <form action="/notmember" method="post">
+            <div class="mypageLogin-memberLogin-member">
+              <div>주문자 전화번호</div>
+              <input style="border:none" size="70" type="text" name="memberPhone" required>
+            </div>
+            <div class="mypageLogin-memberLogin-member">
+              <div>주문번호</div>
+              <input style="border:none" size="70" type="text" name="orderUno" required>
+            </div>
+            <button id="mypageLoginNotMember" class="mypage-button">비회원 주문조회</button>
+          </form>
+          <div class="mypageLogin-login-signup">
+            <div class="login-title">멤버십 혜택</div>
+            <div class="login-subtitle">
+              <div>지금 LOST & FOUND에 회원가입하시면</div>
+              <div>쇼핑에 필요한 즐거운 혜택이 가득!</div>
+            </div>
+            <div>
+              <a href="/signup"><button class="mypage-button">회원가입</button></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <th:block th:replace="~{common/footer}"></th:block>
+<!--   <script th:inline="javascript">
+    const getCookie = function 
+  </script> -->
+</body>
+</html>

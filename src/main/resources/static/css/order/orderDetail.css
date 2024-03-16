@@ -1,0 +1,145 @@
+.orderDetail-mainFrame{
+  display: flex;
+  margin: 0 auto;
+  width: 970px;
+}
+
+.orderDetail-mainFrame-order{
+  width: 970px;
+  margin: 80px 0 0 30px;
+}
+
+.orderDetail-order-text{
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.orderDetail-mainFrame-order table{
+  border: 0.5px solid #eee;
+  width: 970px;
+  margin: 20px 0;
+}
+.orderDetail-mainFrame-order th{
+  padding-left: 15px;
+  background-color: #fafafa;
+  border: 0.5px solid #eee;
+  height: 45px;
+  text-align: left;
+}
+.orderDetail-mainFrame-order td{
+  padding-left: 10px;
+  border: 0.5px solid #eee;
+  height: 45px;
+}
+
+.orderDetail-order-payment tr:nth-child(4) td:nth-child(2)>div{
+  width: 150px;
+  height: 10px;
+
+  margin: 20px 0;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.orderDetail-order-info th{
+  padding-left: 0;
+  text-align: center;
+}
+.orderDetail-order-info td{
+  padding-left: 0;
+  background-color: white;
+  text-align: center;
+}
+.orderDetail-order-info td:nth-child(1) img{
+  margin: 10px 0;
+}
+.orderDetail-order-info td:nth-child(2){
+  background-color: white;
+  text-align: left;
+}
+.orderDetail-order-info td:nth-child(2)>div{
+  margin-top: 10px;
+  margin-left: 20px;
+}
+.orderDetail-order-info td:nth-child(2)>a>div{
+  margin-left: 20px;
+  font-size: 1.5rem;
+}
+
+.orderDetail-order-info td:nth-child(2) span{
+  color: #ccc;
+}
+.orderDetail-order-info td>div:nth-child(1){
+  /* font-weight: bold; */
+}
+.orderDetail-order-info td:nth-child(4)>div:nth-child(2){
+  margin-top: 5px;
+  color: #ccc;
+  text-decoration: line-through;
+}
+
+.orderDetail-order-info tr:last-child >th >div{
+  background-color: #fafafa;
+  display: flex;
+  justify-content: end;
+  margin-right: 25px;
+}
+.orderDetail-order-info tr:last-child >th >div *{
+  margin-left: 50px;
+}
+
+.orderDetail-order-shipping tr th{
+  width: 170px;
+}
+
+.orderDetail-shipping-shippinglist{
+  display: flex;
+  justify-content: right;
+}
+.orderDetail-shipping-shippinglist button{
+  background-color: #fafafa;
+}
+
+.mypageDetail-order-shipping{
+  margin-bottom: 0 !important;
+}
+
+.mypageDetail-order-shipping th{
+  width: 200px;
+}
+
+.order-detail-subtitle{
+  margin-left: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #666;
+}
+
+.orderButtom{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+}
+
+.emailReSend{
+  margin-right: 2px;
+  margin-bottom: 10px;
+}
+
+.emailReSend>span{
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.orderBtn{
+  display: flex;
+}
+
+#cancleBtn{
+  margin: 0 10px;
+}

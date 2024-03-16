@@ -1,0 +1,62 @@
+  <!-- 리뷰 상세 모달창 -->
+<div class="review-modal-overlay" >
+  <input type="hidden" id="reviewDetailModalMemberId" th:value = ${session.loginMember?.memberNo}>
+  <div class="review-modal-window">
+    <div class="review-modal-close">x</div>
+    <div class="review-modal-top">
+      <div>
+        <img class="Detailpreview" src="/images/sample/230605001.jpg">
+      </div>
+      <div>
+        <div class="review-modal-title" id="reviewDetailModalName">이름</div>
+        <div class="write-review-modal-grade">
+          <div><span>[상품 평점] </span></div>
+          <div>
+            <span id="reviewDetailScoreBack">
+              <span id="reviewDetailScoreColor">
+              </span>
+              <img id="reviewDetailModalStar" src="/images/common/star.svg"></img>
+            </span>　
+            <input type="number" min="0" max="5" step="0.1" id="reviewDetailModalTextScore" onKeypress="javascript:if(event.keyCode==13) {event.preventDefault()}" onkeyup="scoreValue(this.value)" readonly></input><span id="reviewScorePoint">점</span>
+          </div>
+        </div>
+        <div id="reviewDetailModalDate">2023.05.30</div>
+        <div>
+          <span class="review-grey">옵션:</span><span id="reviewDetailModalOption" class="review-grey"></span>
+        </div>
+        <div class="review-modal-product">
+          <div>
+            <img src="/images/sample/230605001.jpg" id="reviewDetailProduct">
+          </div>
+          <div class="review-modal-product-desc">
+            <div id="reviewDetailModalProductName">(상품명)</div>
+            <div><span class="review-modal-subtitle" id="reviewDetailModalProductPrice">(할인가)</span><span class="review-grey" id="reviewDetailModalProductSalePrice">(정가)</span></div>
+            <div><span>리뷰개수:</span><span id="reviewDetailModalReviewCount"></span>개</div>
+          </div>
+        </div>
+        <div class="review-modal-to-product"><a id="reviewDetailModalProductNo" class="review-grey">상품 구경하러 가기&gt;</a></div>
+        <div class="review-modal-contents">
+          <div id="reviewDetailModalContent">(내용)</div>
+        </div>
+      </div>
+    </div>
+    <div class="review-modal-middle">
+      <img class="Detailpreview" src="">
+      <img class="Detailpreview" src="">
+      <img class="Detailpreview" src="">
+      <img class="Detailpreview" src="">
+    </div>
+    <div class="btn-container" id="reviewModifyDeleteBtn">
+      <button type="button" th:if="${session.loginMember?.memberGrade=='A'}" id="bestReview">베스트 리뷰에 추가</button>
+      <button id="reviewDetailModalDeleteBtn">삭제</button>
+      <button id="reviewDetailModalModifyBtn" class="submit">수정</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+

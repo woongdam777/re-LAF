@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/admin/adminOrder/orderselect.css">
+  <title>관리자 :: 주문조회</title>
+  <script src="https://kit.fontawesome.com/9c2aaccfe5.js" crossorigin="anonymous"></script>
+  <style>
+    .sidebar li.sub.adminOrder:not(.last) { height: 30px !important; }
+    .sidebar li.sub.adminOrder.last { height: 10px !important; }
+  </style>
+</head>
+<body>
+
+  <th:block th:replace="~{admin/adminHeader}"></th:block>
+  
+  <main>
+    <section class="admin-container">
+      <div class="order-select">
+        <div>
+          <span class="order-select-title">주문 조회</span>
+        </div>
+        <div class="order-select-box">
+          <form id="orderSelectForm" action="/admin/order">
+            <table class="order-select-top">
+              <tr>
+                <td>검색어</td>
+                <td>
+                  <select name="findState">
+                    <option>전체</option>
+                    <option>상품명</option>
+                    <option>주문번호</option>
+                  </select>
+                  <input name="findKeyword" type="text">
+                </td>
+              </tr>
+              <tr>
+                <td>날짜</td>
+                <td>
+                  <div id="dateFilter">
+                    <input type="date" name="findStartDate">
+                    <div>~</div>
+                    <input type="date" name="findEndDate">
+                    <input name="during" id="today" type="radio"><label for="today"><div>오늘</div></label>
+                    <input name="during" id="oweek" type="radio"><label for="oweek"><div>1주일</div></label>
+                    <input name="during" id="omonth" type="radio"><label for="omonth"><div>1개월</div></label>
+                    <input name="during" id="tmonth" type="radio"><label for="tmonth"><div>3개월</div></label>
+                    <input name="during" id="smonth" type="radio"><label for="smonth"><div>6개월</div></label>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  주문 상태
+                  <input type="hidden" name="sellState">
+                </td>
+                <td>
+                  <div id="sellStateChecked">
+                    <input value="A" type="checkbox">주문접수
+                    <input value="B" type="checkbox">결제확인
+                    <input value="C" type="checkbox">상품준비
+                    <input value="D" type="checkbox">출고완료
+                    <input value="E" type="checkbox">배송중
+                    <input value="F" type="checkbox">배송완료
+                    <input value="G" type="checkbox">취소중
+                    <input value="H" type="checkbox">취소완료
+                    <input value="I" type="checkbox">교환중
+                    <input value="J" type="checkbox">교환완료
+                    <input value="K" type="checkbox">반품중
+                    <input value="L" type="checkbox">반품완료
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  주문 결제
+                  <input type="hidden" name="payState">
+                </td>
+                <td>
+                  <div id="payStateChecked">
+                    <input value="1" type="checkbox">무통장 입금
+                    <input value="2" type="checkbox">일반결제
+                    <input value="3" type="checkbox">카카오페이
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <div class="order-select-btn">
+              <button id="selectBtn">검색</button>
+              <button id="resetBtn" type="reset">초기화</button>
+            </div>
+          </form> 
+        </div>
+        <div class="order-select-list">
+          <div class="order-select-table-title">
+            <div>
+              <div th:text="'검색결과 '+${listCount} + '건'">(검색결과 2건)</div>
+            </div>
+            <div>
+              <select id="orderStateC">
+                <option value="0">선택</option>
+                <option value="A">주문접수</option>
+                <option value="B">결제확인</option>
+                <option value="C">상품준비</option>
+                <option value="D">출고완료</option>
+                <option value="E">배송중</option>
+                <option value="F">배송완료</option>
+                <option value="G">취소중</option>
+                <option value="H">취소완료</option>
+                <option value="I">교환중</option>
+                <option value="J">교환완료</option>
+                <option value="K">반품중</option>
+                <option value="L">반품완료</option>
+              </select>
+              <button type="button" id="changeStateAllBtn">일괄수정</button>
+            </div>
+          </div>
+          <table class="order-select-table">
+            <tr>
+              <td>
+                <input type="checkbox">
+              </td>
+              <td>
+                <p>주문일자</p>
+                <p>[주문번호]</p>
+              </td>
+              <td>이미지</td>
+              <td>상품정보</td>
+              <td>수량</td>
+              <td>상품구매금액</td>
+              <td>주문처리상태</td>
+            </tr>
+            <tr th:if="${#lists.size(orderMaps) == 0}">
+              <td colspan="7">
+                <div style="display: flex; justify-content: center;">
+                  <span>오늘 주문 내역이 없습니다.</span>
+                </div>
+              </td>
+            </tr>
+            <tr class="order-modal-row" th:each="orderMap : ${orderMaps}" th:object="${orderMap}">
+              <td>
+                <input type="checkbox" id="checkedSelect"><input type="hidden" th:value="*{order.orderNo}">
+              </td>
+              <td>
+                <p th:text="*{#strings.substring(order.orderDate,0,10)}">주문날짜</p>
+                <p id="orderNum" th:text="'[ ' + *{order.orderUno}+' ]'">주문번호</p>
+              </td>
+              <td>
+                <div>
+                  <img width="70px" th:each="i, index:${orderMap.odpList}" th:if="${1 == index.count}" th:src="${i.product.thumbnailPath}">
+                </div>
+              </td>
+              <td>
+                <p th:each="i, index:${orderMap.odpList}" th:if="${1 == index.count}" th:text="${i.product.productName}" >상품명</p>
+                <p th:each="i, index:${orderMap.odpList}" th:if="${1 == index.count}" th:text="${i.option.size}?'[ '+${i.option.color} +' '+${i.option.size+' ]'} : '[ '+${i.option.color}+' ]'" >[옵션:그린]</p>
+              </td>
+              <td th:text="${#aggregates.sum(orderMap.odpList.![count])}">1</td>
+              <td th:text="${#numbers.formatInteger(orderMap.order.orderPayment, 3, 'COMMA')} + '원'">제품가격</td>
+              <td>
+                <p class="orderState" th:text="*{order.orderState}">주문처리상태</p>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- 페이징 -->
+        <div class="pagination-area">
+
+          <!-- 검색결과 -->
+          <ul class="pagination">
+
+            <!-- 첫 페이지로 이동 -->
+            <li><a th:href="@{/admin/order(cp=1)}">
+                <img th:src="@{/images/common/paging/first-page.svg}">
+              </a></li>
+
+            <!-- 이전 목록 마지막 번호로 이동 -->
+            <li><a th:href="@{/admin/order(cp=${pagination.prevPage})}">
+                <img th:src="@{/images/common/paging/prev-page.svg}">
+              </a></li>
+
+            <!-- 특정 페이지로 이동 -->
+            <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage, 1)}">
+              <!-- 현재 보고있는 페이지 -->
+              <li th:if="${i == pagination.currentPage}">
+                <a class="current" th:text="${i}">현재 페이지</a>
+              </li>
+
+              <!-- 현재 페이지를 제외한 나머지 -->
+              <li th:unless="${i == pagination.currentPage}">
+                <a th:href="@{/admin/order(cp=${i})}" th:text="${i}"></a>
+              </li>
+            </th:block>
+
+            <!-- 다음 목록 시작 번호로 이동 -->
+            <li><a th:href="@{/admin/order(cp=${pagination.nextPage})}">
+                <img th:src="@{/images/common/paging/next-page.svg}">
+              </a></li>
+
+            <!-- 끝 페이지로 이동 -->
+            <li><a th:href="@{/admin/order(cp=${pagination.maxPage})}">
+                <img th:src="@{/images/common/paging/last-page.svg}">
+              </a></li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+    <th:block th:replace="~{admin/adminOrder/orderModal}"></th:block>
+  </main>
+  <th:block th:replace="~{admin/adminOrder/orderModal}"></th:block>
+  <script th:inline="javascript">
+    const dataMap = /*[[${dataMap}]]*/ "검색데이터";
+    const orderMaps = /*[[${orderMaps}]]*/ "주문목록";
+  </script>
+  <script th:src="@{/js/admin/adminOrder/orderSelect.js}"></script>
+</body>
+</html>

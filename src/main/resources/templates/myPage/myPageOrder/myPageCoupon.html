@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/shopping/categoryList.css">
+  <link rel="stylesheet" href="/css/mypage/myPageOrder/myPageCoupon.css">
+  <title>LAF :: 적립금 및 쿠폰</title>
+
+</head>
+<body>
+  <th:block th:replace="~{common/header}"></th:block>
+  <th:block th:replace="~{common/nav}"></th:block>
+  
+  <main>
+    <section class="mypageCoupon-mainFrame">
+      <th:block th:replace="~{myPage/myPageSide}"></th:block>
+        <!-- 마이페이지 중앙 대쉬보드 -->
+        <div class="mypageCoupon-dashFrame-myMain">
+          <!-- 등급 확인 및 적립금 예치금 쿠폰 -->
+          <div class="section-header">
+            <div class="section-title">쿠폰</div>
+          </div>
+            
+            <!-- 하위 메뉴 -->
+            <div class="sub-category-container">
+              <!-- 현재 카테고리에 current 클래스 추가 -->
+              <a href="/myPage/point"><div class="sub-category">적립금 내역</div></a>
+              <a href="/myPage/coupon"><div class="sub-category current">보유중인 쿠폰</div></a>
+            </div>
+
+            <div class="mypageCoupon-coupon-detail">
+              <div class="mypageCoupon-coupon-detail-top">
+                <div>쿠폰 목록</div> 
+                <div>사용가능한 쿠폰 : 
+                  <div th:text="|${listCount} 장|">쿠폰개수</div>
+                </div> 
+              </div>
+              <table>
+                <tr>
+                  <td width="60px">번호</td>
+                  <td width="320px">쿠폰명</td>
+                  <td width="150px">쿠폰 혜택</td>
+                  <td width="150px">사용 조건</td>
+                  <td width="150px">최대 할인 금액</td>
+                  <td width="230px">사용가능 기간</td>
+                </tr>
+                <!-- 항목 추가 -->
+                <!-- 사용가능한 쿠폰이 없을 때 -->
+                <tr th:if="${listCount == 0}">
+                  <td colspan="6" class="coupon-is-not-exists">쿠폰 내역이 존재하지 않습니다.</td>
+                </tr>
+                <!-- 사용가능한 쿠폰이 있을 때 -->
+                <tr th:unless="${listCount == 0}" th:each="coupon, index: ${couponList}" class="mypageCoupon-detail-list">
+                  <td th:text="${index.index+1}">번호</td>
+                  <td th:text="${coupon.couponName}">쿠폰명</td>
+                  <td>
+                    <!-- 퍼센트일 경우 -->
+                    <div th:if="${coupon.couponUnit == 'P'}">
+                      <span th:text="${coupon.couponAmount}"></span>
+                      <span>%</span>
+                    </div>
+                    <!-- 금액일 경우 -->
+                    <div th:unless="${coupon.couponUnit == 'P'}">
+                      <span th:text="|${#numbers.formatInteger(coupon.couponAmount, 3, 'COMMA')}|"></span>
+                      <span>원</span>
+                    </div>
+                  </td>
+                  <td th:text="|${#numbers.formatInteger(coupon.couponCondition, 3, 'COMMA')} 원|">사용 조건</td>
+                  <td th:text="|${#numbers.formatInteger(coupon.couponMaxDiscount, 3, 'COMMA')} 원|">최대 할인 금액</td>
+                  <td>
+                    <div>
+                      <div th:text="${#strings.substring(coupon.couponGetDate,0,11)}">발급일</div>
+                      <div>~</div>
+                      <div th:text="${#strings.substring(coupon.couponDueDate,0,11)}">만료일</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+             <!-- 페이징 -->
+             <div class="pagination-area">
+              <ul th:unless="${listCount == 0}" class="pagination">
+                <!-- 첫 페이지로 이동 -->
+                <li><a th:href="@{/myPage/coupon(cp=1)}">
+                    <img th:src="@{/images/common/paging/first-page.svg}">
+                  </a></li>
+
+                <!-- 이전 목록 마지막 번호로 이동 -->
+                <li><a th:href="@{/myPage/coupon(cp=${pagination.prevPage})}">
+                    <img th:src="@{/images/common/paging/prev-page.svg}">
+                  </a></li>
+
+                <!-- 특정 페이지로 이동 -->
+                <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage, 1)}">
+                  <!-- 현재 보고있는 페이지 -->
+                  <li th:if="${i == pagination.currentPage}">
+                    <a class="current" th:text="${i}">현재 페이지</a>
+                  </li>
+
+                  <!-- 현재 페이지를 제외한 나머지 -->
+                  <li th:unless="${i == pagination.currentPage}">
+                    <a th:href="@{/myPage/coupon(cp=${i})}" th:text="${i}"></a>
+                  </li>
+                </th:block>
+
+                <!-- 다음 목록 시작 번호로 이동 -->
+                <li><a th:href="@{/myPage/coupon(cp=${pagination.nextPage})}">
+                    <img th:src="@{/images/common/paging/next-page.svg}">
+                  </a></li>
+
+                <!-- 끝 페이지로 이동 -->
+                <li><a th:href="@{/myPage/coupon(cp=${pagination.maxPage})}">
+                    <img th:src="@{/images/common/paging/last-page.svg}">
+                  </a></li>
+              </ul>
+            </div>
+            </div>
+      
+          </div>
+        </div>
+      </section>
+  </main>
+  <th:block th:replace="~{common/footer}"></th:block>
+</body>
+</html>

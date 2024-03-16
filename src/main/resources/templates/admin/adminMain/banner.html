@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/admin/adminMain/banner.css">
+  <title>관리자 :: 배너관리</title>
+  <style>
+    .sidebar li.sub.banner:not(.last) { height: 30px !important; }
+    .sidebar li.sub.banner.last { height: 10px !important; }
+  </style>
+</head>
+<body>
+
+  <th:block th:replace="~{admin/adminHeader}"></th:block>
+  
+  <main>
+    <section class="admin-container">
+      <div class="main-control-view">
+        <div>
+          <span class="main-control-view-title">메인 화면 관리</span>
+          <span>(메인 이미지)</span>
+        </div>
+        <div class="main-control-img">
+
+          <form th:action="@{/admin/banner/update}" method="post" id="bannerFrm" encType="multipart/form-data">
+            <ul>
+
+              <li th:each="img : ${bannerList}" th:bannerNo="${img.bannerNo}">
+                <div class="image-controller">
+                  <div class="main-control-subtitle" th:text="|메인 이미지 ${imgStat.index + 1}|"></div>
+                  <div class="main-control-btn">
+                    <button type="button" class="upload-btn">업로드</button>
+                    <button type="button" class="delete-btn">삭제</button>
+                  </div>
+                </div>
+                <div class="main-thumbnail">
+                  <img th:src="${img.imgPath}">
+                  <input class="hidden input-img" type="file" name="banner">
+                </div>
+              </li>
+
+            </ul>
+
+            <div class="main-control-add">
+              <button type="button">배너 추가하기</button>
+            </div>
+            <div class="form-btn">
+              <button type="submit" class="submit">저장</button>
+              <button type="reset">취소</button>
+            </div>
+
+            <!-- 삭제된 이미지 정보 전송 -->
+            <input type="hidden" name="removedImages">
+          </form>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script th:src="@{/js/admin/adminMain/banner.js}"></script>
+
+</body>
+</html>

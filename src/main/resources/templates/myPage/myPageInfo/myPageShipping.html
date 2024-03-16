@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/shopping/categoryList.css">
+  <link rel="stylesheet" href="/css/mypage/myPageInfo/myPageShipping.css">
+  <title>LAF :: 배송지 관리</title>
+
+</head>
+<body>
+  <th:block th:replace="~{common/header}"></th:block>
+  <th:block th:replace="~{common/nav}"></th:block>
+  
+  <main>
+    <section class="mypageShipping-mainFrame">
+      <th:block th:replace="~{myPage/myPageSide}"></th:block>
+      <!-- 마이페이지 중앙 대쉬보드 -->
+      <div class="orderShipping-MyMain-Shipping">
+        <div class="section-header">
+          <div class="section-title">배송지 관리</div>
+        </div>
+        <form action="/myPage/shipping/delete" method="post">
+            <table class="shipping-list-table">
+              <tr>
+                <td> <input type="checkbox" id="headCheckbox"> </td>
+                <td>배송지명</td>
+                <td>수령인</td>
+                <td>휴대전화</td>
+                <td>주소</td>
+                <td>수정</td>
+              </tr>
+              <!-- 배송지가 없을 경우 -->
+              <tr th:unless="${#lists.size(addressList) != 0}" class="orderShipping-Shipping-list">
+                <td colspan="5"> 저장된 배송지가 존재하지 않습니다.</td>
+              </tr>
+              <!-- 배송지가 있을 경우 -->
+              <tr th:if="${#lists.size(addressList) != 0}" th:each="address : ${addressList}"  class="orderShipping-Shipping-list">
+                <td><input type="checkbox" name="addressNo" class="shipping-checkbox" th:value="${address.addressNo}"></td>
+                <td th:text="${address.addressName}">배송지명</td>
+                <td th:text="${address.addressReceiver}">수령인</td>
+                <td th:text="${address.addressTel}">전화번호</td>
+                <td>
+                  <div>
+                    <div class="myPage-shipping-address">주소</div>
+                    <div th:if="${address.addressDefaultFL == 'Y'}" class="p-category-item">기본배송지</div>
+                  </div>
+                </td>
+                <td><button type="button" class="selected-modifying-shipping" th:value="${address}">수정</button></td>
+              </tr>
+            </table>
+            <div class="mypageAddShipping-Shipping-notice">
+              <div>배송주소록 유의사항</div>
+              <div>- 배송 주소록은 최대 3개까지 등록할 수 있습니다.</div>
+              <div>- 기본 배송지는 1개만 저장됩니다. 다른 배송지를 기본 배송지로 설정하시면 기본 배송지가 변경됩니다.</div>
+            </div>
+            <div class="orderShipping-Shipping-button">
+              <button id="deleteShipping">선택 주소록 삭제</button>
+              <button type="button" id="openEnrollShippingModal">새로운 배송지 등록</button>
+            </div>
+          </div>
+        </form>
+    </section>
+    <th:block th:replace="~{myPage/myPageInfo/myPageShippingModal}"></th:block>
+  </main>
+  <th:block th:replace="~{common/footer}"></th:block>
+
+  <script th:inline="javascript">
+  /* 주소값 구분자 제거 후 가져오기 */
+  const addressList = /*[[${addressList}]]*/ [];
+  const inputAddress = document.getElementsByClassName("myPage-shipping-address");
+  for(let i = 0; i < addressList.length; i++) {
+    inputAddress[i].innerText =  (addressList[i].address.replaceAll("^^^", " ")).substring(5);
+  }
+  </script>
+
+</body>
+</html>

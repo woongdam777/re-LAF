@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/boards/boardsCommon.css">
+  <link rel="stylesheet" href="/css/boards/qna.css">
+  <title>LAF :: 1대1문의</title>
+</head>
+<body th:with="qna=${qna}">
+
+  <th:block th:replace="~{common/header}"></th:block>
+  <th:block th:replace="~{common/nav}"></th:block>
+  
+  <main>
+
+    <section class="board-list" th:grade="${session.loginMember?.memberGrade}">
+      <div class="section-header">
+        <div class="section-title">1:1문의</div>
+      </div>
+      <div class="sub-category-container">
+        <!-- 현재 카테고리에 current 클래스 추가 -->
+        <a href="/notice"><div class="sub-category">NOTICE</div></a>
+        <a href="/qna"><div class="sub-category current">1:1문의</div></a>
+        <a href="/faq"><div class="sub-category">FAQ</div></a>
+        <a href="/review"><div class="sub-category">REVIEW</div></a>
+      </div>
+
+      <!-- 게시판 -->
+      <div class="detail-list-wrapper">
+        <table class="detail-list-table">
+          <tr>
+            <td>TITLE</td>
+            <td th:text="${qna.qnaTitle}">Re: 테스트 제목 입니다</td>
+          </tr>
+          
+          <tr>
+            <td>CATEGORY</td>
+            <td th:text="${qna.qnaCategory}">배송</td>
+          </tr>
+
+          <tr>
+            <td>NAME</td>
+            <td th:text="${qna.memberName}">관리자</td>
+          </tr>
+
+          <tr>
+            <td>DATE</td>
+            <td th:text="${qna.qnaCreateDate}">2023-06-07</td>
+          </tr>
+        </table>
+      </div>
+      <div class="detail-question-answer">
+        <div class="detail-question-prev">
+          <pre>문의 내용 확인하기(클릭)</pre>
+        </div>
+        <div class="detail-question-all">
+          <pre th:text="${qna.qnaContent}">
+        보름이 지나도록 상품이 오지 않습니다. 직접 걸어서 배송하시나요
+          </pre>
+        </div>
+      </div>
+      <div class="detail-list-contents">
+        <pre th:text="${qna.qnaAnswer}">
+          네 주인이 직접 걸어서 배송합니다. 30일만 더 기다려 주세요
+        </pre>
+      </div>
+      
+      <!-- 하단 버튼 영역 -->
+      <div class="detail-btn-area">
+        <div>
+          <a href="/qna"><button type="button">LIST</button></a>                     
+        </div>
+        <div th:if="${qna.memberNo==session.loginMember?.memberNo or not #strings.isEmpty(qna.qnaPw) || session.loginMember?.memberGrade =='A'}">
+          <button type="button" id="qnaDelete" th:value="${qna.qnaNo}"  th:writerNo="${qna.memberNo}" th:memberNo="${session.loginMember?.memberNo}">DELETE</button>                     
+          <button type="button" class="submit" id="qnaModify" th:value="${qna.qnaNo}"  th:writerNo="${qna.memberNo}" th:memberNo="${session.loginMember?.memberNo}" >MODIFY</button>                     
+        </div>
+      </div>
+      <div class="btn-container"  th:if="${session.loginMember?.memberGrade =='A'}">
+        <button type="button" id="qnaAnswer" th:value="${qna.qnaNo}"  th:writerNo="${qna.memberNo}" th:memberNo="${session.loginMember?.memberNo}" class="submit" >답변하기</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="qnaDetailModelBack"></div>
+  <div id="qnaDetailModal" th:value="${qna.qnaNo}">
+    <div>비밀번호를 입력해주세요</div>
+    
+    <div><input type="number" id="qnaDetailModalInput"></div>
+    <div><button type="button" id="qnaDetailModalBtn">확인</button></div>
+  </div>
+  <div id="qnaDeleteModelBack"></div>
+  <div id="qnaDeleteModal" th:value="${qna.qnaNo}">
+    <div>비밀번호를 입력해주세요</div>
+    
+    <div><input type="number" id="qnaDeleteModalInput"></div>
+    <div><button type="button" id="qnaDeleteModalBtn">확인</button></div>
+  </div>
+  
+  <th:block th:replace="~{common/footer}"></th:block>
+
+  <script>
+    const questionPrev = document.getElementsByClassName("detail-question-prev")[0]
+    questionPrev.addEventListener('click', e => {
+      questionPrev.style.display = "none";
+      document.getElementsByClassName("detail-question-all")[0].style.display = "block";
+    });
+  </script>
+  <script src="/js/boards/qna.js"></script>
+</body> 
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 :: 상품등록</title>
+  <style>
+    .sidebar li.sub.product:not(.last) { height: 30px !important; }
+    .sidebar li.sub.product.last { height: 10px !important; }
+  </style>
+</head>
+<body>
+
+  <th:block th:replace="~{admin/adminHeader}"></th:block>
+  
+  <main>
+    <sectoin class="admin-container">
+
+      <form id="enrollForm" class="product-enroll" th:action="@{/admin/product/enroll/submit}" method="POST" encType="multipart/form-data">
+        <div class="product-enroll-title">상품 등록</div>
+
+        <th:block th:replace="~{admin/adminProduct/productDetail}"></th:block>
+
+        <!-- 폼 제출 버튼 -->
+        <div id="enrollSubmitBtnContainer">
+          <button id="enrollSubmitBtn">등록</button>
+        </div>
+      </form>
+
+    </section>
+  </main>
+
+  <script th:src="@{/js/admin/adminProduct/adminProductEnroll.js}"></script>
+</body>
+</html>

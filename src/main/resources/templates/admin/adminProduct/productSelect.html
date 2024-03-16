@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" th:href="@{/css/admin/adminProduct/productSelect.css}">
+  <script src="https://kit.fontawesome.com/9c2aaccfe5.js" crossorigin="anonymous"></script>
+  <title>관리자 :: 상품조회</title>
+  <style>
+    .sidebar li.sub.product:not(.last) { height: 30px !important; }
+    .sidebar li.sub.product.last { height: 10px !important; }
+  </style>
+</head>
+
+<body>
+  <!-- 스크롤바 -->
+  <div class="scroll-box">
+    <div class="scroll-top"></div>
+    <div class="scroll"></div>
+  </div>
+
+  <th:block th:replace="~{admin/adminHeader}"></th:block>
+
+  <main>
+    <section class="admin-container">
+      <!-- 상품 조회 -->
+      <div class="product-select" id="top">
+        <span class="product-select-title">상품 조회</span>
+        <div class="product-select-box">
+          <form th:action="@{/admin/product}" id="searchForm">
+            <table class="product-select-top">
+              <tr>
+                <td>검색어</td>
+                <td>
+                  <select id="queryKey" name="qk">
+                    <option name="qk" value="">전체</option>
+                    <option name="qk" value="name">상품명</option>
+                    <option name="qk" value="no">상품번호</option>
+                  </select>
+                  <div id="queryContainer">
+                    <input id="query" name="query" type="text" placeholder="검색어를 입력하세요" th:value="${query}">
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>카테고리</td>
+                <td>
+
+                  <select class="select-category" id="parentCategory" name="pc">
+                    <option name="pc" value="">1차 분류</option>
+                    <option name="pc" 
+                      th:each="category : ${categoryList}"
+                      th:if="${category.parentCategoryNo == 0}"
+                      th:value="${category.categoryNo}"
+                      th:text="${category.categoryName}">부모 카테고리 이름</option>
+                  </select>
+
+                  <select class="select-category" id="childCategory" name="cc" disabled>
+                    <option name="cc" value="">2차 분류</option>
+                    <option name="pc"
+                      th:each="category : ${categoryList}"
+                      th:if="${#maps.containsKey(paramMap, 'pc')} and ${#strings.toString(category.parentCategoryNo) == #strings.toString(paramMap.pc)}"
+                      th:value="${category.categoryNo}"
+                      th:text=" ${category.categoryName}">자식 카테고리 이름</option>
+                  </select>
+
+                </td>
+              </tr>
+
+              <tr>
+                <td>판매상태</td>
+                <td>
+                  <div>
+                    <label class="sales-state"><input type="checkbox" name="state" value="" id="checkboxStateSelectAll" checked>전체</label>
+                    <label class="sales-state"><input type="checkbox" name="state" value="O" checked>공개</label>
+                    <label class="sales-state"><input type="checkbox" name="state" value="S" checked>전체품절</label>
+                    <label class="sales-state"><input type="checkbox" name="state" value="N" checked>비공개</label>
+                  </div>
+                </td>
+              </tr>
+
+            </table>
+
+            <div class="product-select-btn">
+              <button type="reset" id="resetBtn">초기화</button>
+              <button type="submit" class="submit" id="submitBtn">검색</button>
+            </div>
+          </form>
+
+          <!-- 조회 결과 -->
+          <div class="product-select-bottom-title">
+            
+            <!-- 정렬, 검색결과 갯수 -->
+            <div class="result-info">
+              <div class="result-ordering">
+                <a th:href="@{/admin/product(ordering=new)}">
+                  <div class="result-ordering-item current" value="new">
+                    최신순<i class="fa-solid fa-angle-down"></i>
+                  </div>
+                </a>
+                <a th:href="@{/admin/product(ordering=sales)}">
+                  <div class="result-ordering-item" value="sales">
+                    판매량순<i class="fa-solid fa-angle-down"></i>
+                  </div>
+                </a>
+                <a th:href="@{/admin/product(ordering=stock)}">
+                  <div class="result-ordering-item" value="stock">
+                    재고량 적은순<i class="fa-solid fa-angle-down"></i>
+                  </div>
+                </a>
+              </div>
+              <div class="result-count" th:text="|(검색결과 ${pagination.listCount} 건)|"></div>
+            </div>
+
+            <div>
+              <select class="product-state all" id="allProductState">
+                <option value="O">판매중</option>
+                <option value="N">비공개</option>
+                <option value="S">전체품절</option>
+              </select>
+              <button type="button" id="changeSelectedBtn">선택상품 상태 일괄수정</button>
+            </div>
+          </div>
+
+          <table class="product-select-bottom">
+            <tr>
+              <td class="p-checkbox"><input class="input-checkbox" id="adminCheckboxStateSelectAll" type="checkbox"></td>
+              <td class="p-no">상품번호</td>
+              <td class="p-name">상품명</td>
+              <td class="p-price-origin">가격</td>
+              <td class="p-price-sale">할인가</td>
+              <td class="p-count">판매량</td>
+              <td class="p-stock">재고</td>
+              <td class="p-enroll">등록일</td>
+              <td class="p-state">상태</td>
+              <td class="p-manage">관리</td>
+            </tr>
+
+            <tr th:if="${#lists.size(productList) == 0}">
+              <td class="no-result" colspan="10">검색 결과가 없습니다.</td>
+            </tr>
+
+            <tr th:each="product : ${productList}">
+              <td class="p-checkbox"><input class="input-checkbox" name="checkbox" type="checkbox"></td>
+              <td class="p-no" th:text="${product.productNo}">상품번호</td>
+              <td class="p-name">
+                <a th:href="@{/product/{no}(no=${product.productNo})}" class="image-container">
+                  <img th:src="${product.thumbnailPath}">
+                </a>
+                <div class="p-info">
+                  <a th:href="@{/product/{no}(no=${product.productNo})}" class="p-info-name" 
+                    th:if="${#strings.length(product.productName) > 65}"
+                    th:text="${#strings.substring(product.productName, 0, 65) + '…'}">상품명</a>
+                  <a th:href="@{/product/{no}(no=${product.productNo})}" 
+                    th:unless="${#strings.length(product.productName) > 65}"
+                    class="p-info-name" th:text="${product.productName}">상품명</a>
+                  <div class="p-info-category">
+                    <a th:each="category : ${resultCategoryList}" 
+                      th:if="${category.product_no == product.productNo}" 
+                      th:href="@{/admin/product(pc=${category.parent_category_no})}">
+                      <span class="p-category-item"
+                        th:text="${category.parent_category_name}">카테고리 이름</span>
+                    </a>
+                  </div>
+                </div>
+              </td>
+              <td th:text="${#numbers.formatInteger(product.productPrice, 3, 'COMMA')}">원가</td>
+              <td th:text="${#numbers.formatInteger(product.productSalePrice, 3, 'COMMA')}">할인가</td>
+                <td th:text="${#numbers.formatInteger(product.sales, 1, 'COMMA')}">판매량</td>
+                <td th:text="${#numbers.formatInteger(product.stock, 1, 'COMMA')}">재고</td>
+              <td th:text="${product.productDate}">23-06-01</td>
+              <td>
+                <select class="product-state" th:value="${product.productState}">
+                  <option value="O">판매중</option>
+                  <option value="N">비공개</option>
+                  <option value="S">전체품절</option>
+                </select>
+              </td>
+              <td>
+                <button type="button" class="modify-product">수정</button>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- 페이징 -->
+        <div class="pagination-area">
+          <ul class="pagination">
+
+            <!-- 첫 페이지로 이동 -->
+            <li><a th:href="@{/admin/product}">
+                <img th:src="@{/images/common/paging/first-page.svg}">
+              </a></li>
+
+            <!-- 이전 목록 마지막 번호로 이동 -->
+            <li><a th:href="@{/admin/product(cp=${pagination.prevPage})}">
+                <img th:src="@{/images/common/paging/prev-page.svg}">
+              </a></li>
+
+            <!-- 특정 페이지로 이동 -->
+            <th:block th:each="i : ${#numbers.sequence(pagination.startPage, pagination.endPage, 1)}">
+              <!-- 현재 보고있는 페이지 -->
+              <li th:if="${i == pagination.currentPage}">
+                <a class="current" th:text="${i}">현재 페이지</a>
+              </li>
+
+              <!-- 현재 페이지를 제외한 나머지 -->
+              <li th:unless="${i == pagination.currentPage}">
+                <a th:href="@{/admin/product(cp=${i})}" th:text="${i}">다른 페이지</a>
+              </li>
+            </th:block>
+
+            <!-- 다음 목록 시작 번호로 이동 -->
+            <li><a th:href="@{/admin/product(cp=${pagination.nextPage})}">
+                <img th:src="@{/images/common/paging/next-page.svg}">
+              </a></li>
+
+            <!-- 끝 페이지로 이동 -->
+            <li><a th:href="@{/admin/product(cp=${pagination.maxPage})}">
+                <img th:src="@{/images/common/paging/last-page.svg}">
+              </a></li>
+          </ul>
+          
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- 회원 상세 모달창 -->
+  <div class="product-modal-overlay" id="productModalOverlay">
+    <form id="productUpdateFrm" th:action="@{/admin/product/mod/submit}" class="product-modal-window" method="POST" encType="multipart/form-data">
+      <div class="product-enroll-title">상품 수정</div>
+
+      <th:block th:replace="~{admin/adminProduct/productDetailUpdate}"></th:block>
+
+      <!-- 폼 제출 버튼 -->
+      <div class="enroll-completted-btn">
+        <button type="button" class="product-modal-close">취소</button>
+        <button id="productUpdateBtn" class="submit">수정</button>
+      </div>
+
+      <input type="hidden" name="removedImages"> <!-- 삭제 이미지 정보 전달 -->
+      <input type="hidden" name="imgOrder"> <!-- 이미지 순서 전달 -->
+    </form>
+  </div>
+
+  <script th:inline="javascript">
+    const queryString = /*[[${queryString}]]*/ "전달 받은 queryString";
+    if(queryString != null ) location.href = location.href + queryString;
+  </script>
+  <script th:src="@{/js/admin/adminProduct/adminProduct.js}"></script>
+
+</body>
+
+</html>

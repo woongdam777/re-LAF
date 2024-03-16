@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.kh.laf.member.model.mapper.MemberMapper">
+    
+     <!-- 로그인 -->
+     <select id="login" resultType="Member">
+	  SELECT *
+	  FROM `member`
+	  WHERE MEMBER_DEL_FL = 'N'
+	  AND MEMBER_ID = #{memberId}
+     </select>
+     
+     	<!-- 회원 가입(SQL 수정 필요, 동적 SQL 사용해야) -->	
+  	<insert id="signUp">
+  		INSERT INTO `member`
+		VALUES (NULL, 					<!--회원 번호-->
+				#{memberId}, 			<!--회원 아이디-->
+				#{memberPw}, 			<!--비밀번호-->
+				#{memberName}, 			<!--회원 이름-->
+				<!--성별-->
+				<!--성별이 없으면-->
+				<if test='memberGender == "n"'> NULL, </if>
+				<!--성별이 있으면-->
+				<if test='memberGender != "n"'> #{memberGender}, </if>
+				#{memberEmail}, 		<!--이메일-->
+				#{memberPhone}, 		<!--전화번호-->
+				<!--생일-->
+				<!--생일이 없으면-->
+				<if test='memberBirth == null'> NULL, </if>
+				<!--성별이 있으면-->
+				<if test='memberBirth != null'> #{memberBirth}, </if>
+				#{memberAddress},		<!--회원주소-->
+				'B', 					<!--회원 등급-->
+				DEFAULT, 				<!--가입일-->
+				DEFAULT, 				<!--회원 탈퇴여부-->
+				NULL, 					<!--탈퇴일-->
+				<!--회원 소셜 가입-->
+				<!--회원 소셜 가입이 없으면-->
+				<if test='memberSocial == null'> NULL, </if>
+				<!--회원 소셜 가입이 있으면-->
+				<if test='memberSocial != null'> #{memberSocial}, </if>
+				<!--환불 은행-->
+				DEFAULT, 				<!--회원 적립금-->
+				DEFAULT, 				<!--회원 누적 구매액-->
+				DEFAULT, 				<!--비회원 여부-->
+				<!--환불 예금주-->
+				<!--환불 예금주가 없으면-->
+				<if test='refundName == null'> NULL, </if>
+				<!--환불 예금주가 있으면-->
+				<if test='refundName != null'> #{refundName}, </if>
+				<!--환불 은행-->
+				<!--환불 은행이 없으면-->
+				<if test='refundBank == 0'> NULL, </if>
+				<!--환불 은행이 있으면-->
+				<if test='refundBank != 0'> #{refundBank}, </if>
+				<!--환불 계좌번호-->
+				<!--환불 계좌번호가 없으면-->
+				<if test='refundAccount == null'> NULL) </if>
+				<!--환불 계좌번호가 있으면-->
+				<if test='refundAccount != null'> #{refundAccount}) </if>
+  	</insert>
+  	
+  	<!--회원 가입 기념 적립금 지급-->
+  	<insert id="insertSignupPoint">
+		  insert into `point`
+			values 
+					(null
+					,(SELECT member_no FROM `member` WHERE member_id = #{memberId})
+					,'G'
+					,'2000'
+					,now()
+					,date_add(now(), INTERVAL 1 month)
+					,'회원 가입 기념 적립금'
+					,null)	
+	</insert>
+  	
+	<!--적립한 포인트를 회원 정보에 반영-->
+	<update id="updateSignupPoint" parameterType="java.util.HashMap">
+		UPDATE `member`
+		SET member_point = (member_point + 2000)
+		WHERE member_id = #{memberId}
+	</update>
+  	
+  	<!--아이디 중복 검사-->
+  	<select id="checkId" resultType="_int">
+		SELECT COUNT(*) FROM `member`
+		WHERE member_id  = #{memberId}
+		AND member_del_fl  = 'N'
+	</select>
+  	
+  	
+  	<!--이메일 중복 검사-->
+  	<select id="checkEmail" resultType="_int">
+		SELECT COUNT(*) FROM `member`
+		WHERE member_email  = #{memberEmail}
+		AND member_del_fl  = 'N'
+	</select>
+	
+	<!--아이디, 이메일주소로 회원 검색(로그인-비밀번호 찾기)-->
+  	<select id="selectMatch" resultType="Member">
+		select * 
+		from `member`
+		where member_email = #{memberEmail}
+		and member_id = #{memberId}
+	</select>
+	
+	<!--아이디, 이메일주소로 새로 생성한 비밀번호 업데이트(로그인-비밀번호 찾기)-->
+  	<update id="findPw">
+		update `member`
+		set member_pw = #{encPw}
+		where member_email = #{memberEmail}
+		and member_id = #{memberId}
+	</update>
+	
+	<!--전화번호, 주문번호로 비회원 주문 조회(로그인-비회원 주문조회)-->
+	<select id="selectNotMemberOrder" resultType="_int">
+		SELECT order_no
+		FROM `order` 
+		LEFT JOIN `member` USING (member_no)
+		WHERE member_phone = #{memberPhone}
+		AND order_uno = #{orderUno}
+	</select>
+	
+	<!--전체 회원의 수 조회(관리자-회원관리)-->
+	<select id="getAllMemberCount" resultType="_int">
+		SELECT count(*) FROM `member`
+		WHERE member_not = "N"
+		<if test="qk != null and qk.equals('all')">AND (member_name LIKE '%${query}%' OR member_id LIKE '%${query}%' OR member_email LIKE '%${query}%') </if>
+		<if test="qk != null and qk.equals('name')"> AND member_name LIKE '%${query}%' </if>
+		<if test="qk != null and qk.equals('id')"> AND member_id LIKE '%${query}%'</if>
+		<if test="qk != null and qk.equals('email')"> AND member_email LIKE '%${query}%' </if>
+	</select>
+	
+	<!--전체 회원 조회(관리자-회원관리)-->
+	<select id="selectAllMemberList" resultType="Member">
+		SELECT member_no, member_id, member_name, member_email, member_grade, member_del_fl, member_point, member_enroll_date 
+		FROM `member`
+		WHERE member_not = "N"
+		<if test="qk != null and qk.equals('all')">AND (member_name LIKE '%${query}%' OR member_id LIKE '%${query}%' OR member_email LIKE '%${query}%') </if>
+		<if test="qk != null and qk.equals('name')"> AND member_name LIKE '%${query}%' </if>
+		<if test="qk != null and qk.equals('id')"> AND member_id LIKE '%${query}%'</if>
+		<if test="qk != null and qk.equals('email')"> AND member_email LIKE '%${query}%' </if>
+		ORDER BY member_enroll_date DESC
+	</select>
+	
+	<!--회원번호로 회원 정보 조회(관리자-회원관리-회원관리상세. 비동기)-->
+  	<select id="selectMemberDetail" resultType="Member">
+		SELECT member_no, member_name, member_social, DATE_FORMAT(member_enroll_date, "%Y-%m-%d") member_enroll_date, 
+	 		   member_del_fl, member_grade, member_id, DATE_FORMAT(member_birth, "%Y-%m-%d") member_birth, member_address
+		FROM `member`
+		WHERE member_no = #{memberNo};
+	</select>
+	
+	<!--회원번호로 회원 기본배송지 조회(관리자-회원관리-회원관리상세. 비동기)-->
+	<select id="selectMemberDetailDefaultAddress">
+		SELECT address FROM `address`
+		WHERE address_default_fl = "Y"
+		AND member_no = #{memberNo}
+	</select>
+	
+	<!--회원번호로 주문 개수 조회(관리자-회원관리-회원상세, 비동기)-->
+	<select id="getOrderListCount" resultType="_int">
+		SELECT count(*) FROM `order` WHERE member_no = #{memberNo}
+	</select>
+	
+	
+	<!--회원번호로 페이지리스트가 적용된 주문 조회(관리자-회원관리-회원상세, 비동기)-->
+	<select id="selectAllOrderList">
+		SELECT order_no, DATE_FORMAT(order_date, "%Y-%m-%d") order_date ,order_uno, order_total_price, order_payment, order_state
+		FROM `order` WHERE member_no = #{memberNo}
+	</select>
+	
+	<!--회원번호로 포인트를 적립(insert) 서비스 호출-->
+	<insert id="insertMemberPoint" parameterType="java.util.HashMap">
+		<if test="memberNoList.size != 0">
+		    insert into `point`
+			values 
+			
+			<!--포인트 유효기간을 기준으로-->
+			<!--포인트 유효기간이 없으면-->
+			<if test='inputPoint.pointDueDate == ""'>
+	   			<foreach collection="memberNoList" item="item" separator=",">
+						(null
+						,#{item}
+						,#{inputPoint.pointSort}
+						,#{inputPoint.pointAmount}
+						,#{inputPoint.pointDate}
+						,NULL
+						,#{inputPoint.pointContent}
+						,null)
+		        </foreach>
+	        </if>
+			<!--포인트 유효기간이 있으면-->
+			<if test='inputPoint.pointDueDate != ""'>
+				<foreach collection="memberNoList" item="item" separator=",">
+						(null
+						,#{item}
+						,#{inputPoint.pointSort}
+						,#{inputPoint.pointAmount}
+						,#{inputPoint.pointDate}
+						,#{inputPoint.pointDueDate}
+						,#{inputPoint.pointContent}
+						,null)
+		        </foreach>
+	        </if>
+	    </if>
+	</insert>
+	
+	<!--적립한 포인트를 회원 정보에 반영-->
+	<update id="updateMemberPoint" parameterType="java.util.HashMap">
+		UPDATE `member`
+		<!--포인트 구분이 'G'면-->
+		<if test='pointSort == "G"'>
+		SET member_point =  (member_point + ${pointAmount})
+        </if>
+		<!--포인트 구분이 'C'면-->
+		<if test='pointSort == "C"'>
+		SET member_point =  (member_point - ${pointAmount})
+        </if>
+		WHERE member_no IN (
+   			<foreach collection="memberList" item="item" separator=",">
+					${item.memberNo}
+	        </foreach>
+	        )
+	</update>
+	
+	<!--회원 번호 목록으로 회원 목록 조회-->
+	<select id="selectMemberList" resultType="Member">
+		SELECT member_no, member_point FROM `member`
+		WHERE member_no IN (
+		<foreach collection="list" item="item" separator=",">
+				${item}
+        </foreach>
+		)
+	</select>
+	
+	<select id="selectGradeMemberList" resultType="_long">
+		select member_no 
+		from `member` 
+		<choose>
+			<when test='memberGrade == "1"'>
+				where
+			</when>
+			<when test='memberGrade == "2"'>
+				<!-- 브론즈 회원 -->
+				where member_grade = 'B' and
+			</when>
+			<when test='memberGrade == "3"'>
+				<!-- 실버 회원 -->
+				where member_grade = 'S' and
+			</when>
+			<when test='memberGrade == "4"'>
+				<!-- 골드 회원 -->
+				where member_grade = 'G'and
+			</when>
+			<when test='memberGrade == "5"'>
+				<!-- 다이아 회원 -->
+				where member_grade = 'D' and
+			</when>
+		</choose>
+				member_del_fl = 'N'
+	</select>
+	
+	<!--쿠폰 지급-->
+	<insert id="insertMemberCoupon" parameterType="java.util.HashMap">
+		INSERT into `coupon`
+		values 
+		<foreach collection="memberNoList" item="item" separator=",">
+				(null
+				,#{item}
+				,#{inputCoupon.couponName}
+				,default
+				,#{inputCoupon.couponDueDate}
+				,#{inputCoupon.couponAmount}
+				,#{inputCoupon.couponUnit}
+				,#{inputCoupon.couponMaxDiscount}
+				,#{inputCoupon.couponCondition}
+				,'N')
+        </foreach>
+	</insert>
+	
+	<!--ID로 회원 찾기-->
+	<select id="selectMemberById" resultType="Member">
+	  SELECT *
+	  FROM `member`
+	  WHERE MEMBER_DEL_FL = 'N'
+	  AND MEMBER_ID = #{memberId}
+	</select>
+	
+	<!-- 멤버 수 추이 조회 -->
+	<select id="getMemeberStatistics">
+		SELECT master.`date` as `date`, master.`count` AS `count`, ifnull(tb.`count`, 0) as count2
+		from (
+			SELECT DATE_FORMAT(m.member_enroll_date, '\'%y.%m') `date`, count(*) `count`
+			FROM `member` m
+			WHERE m.member_del_fl='N' 
+				AND m.member_not='N'
+				AND m.member_enroll_date >= DATE_SUB(NOW(), INTERVAL 3 YEAR)
+			GROUP BY `date`
+		) master	
+		LEFT JOIN (	
+			SELECT tb.`date`, count(*) AS `count`
+			FROM (
+			SELECT 
+				IFNULL(DATE_FORMAT(date_add(max(order_date), INTERVAL 1 month), '\'%y.%m'), DATE_FORMAT(date_add(member_enroll_date, INTERVAL 1 MONTH), '\'%y.%m')) `date`
+			FROM `order`
+				right JOIN `member` ON `member`.member_no = `order`.member_no
+			WHERE order_date <![CDATA[<]]> DATE_SUB(NOW(), INTERVAL 1 MONTH) 
+				OR (order_date IS NULL AND member_enroll_date <![CDATA[<]]> DATE_SUB(NOW(), INTERVAL 1 MONTH))
+			GROUP BY `member`.member_no
+			) AS tb
+			GROUP BY `date`		
+		) tb ON tb.`date` = master.`date`
+		order by `date`
+	</select>
+
+	
+</mapper>
+

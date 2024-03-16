@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.kh.laf.mypage.model.mapper.MypageMapper">
+	
+	
+	
+	<!--회원 주문 조회(마이페이지-대시보드)-->
+	<select id="selectMyPageOrderList" resultType="Order">
+		SELECT *  FROM `order` 
+		WHERE member_no = #{memberNo}
+		and (order_date BETWEEN  DATE_ADD(NOW(), INTERVAL -3 MONTH) AND NOW())
+	</select>
+	
+	<!--회원 정보 수정(마이페이지-정보관리-회원정보변경)-->
+  	<update id="editMyPageInfo">
+	    update `member`
+		SET member_name = #{memberName},
+			member_address = #{memberAddress},
+			member_phone = #{memberPhone},
+			member_email = #{memberEmail},
+			member_birth = 
+			<!--생일-->
+			<!--생일이 없으면-->
+			<if test='memberBirth == null'> NULL, </if>
+			<!--생일이 있으면-->
+			<if test='memberBirth != null'> #{memberBirth}, </if>
+			member_gender = 
+			<!--성별-->
+			<!--성별이 없으면-->
+			<if test='memberGender == "n"'> NULL, </if>
+			<!--성별이 있으면-->
+			<if test='memberGender != "n"'> #{memberGender}, </if>
+			refund_name = 			
+			<!--환불 예금주-->
+			<!--환불 예금주가 없으면-->
+			<if test='refundName == null'> NULL, </if>
+			<!--환불 예금주가 있으면-->
+			<if test='refundName != null'> #{refundName}, </if>
+			refund_bank = 
+			<!--환불 은행-->
+			<!--환불 은행이 없으면-->
+			<if test='refundBank == 0'> NULL, </if>
+			<!--환불 은행이 있으면-->
+			<if test='refundBank != 0'> #{refundBank}, </if>
+			refund_account = 
+			<!--환불 계좌번호-->
+			<!--환불 계좌번호가 없으면-->
+			<if test='refundAccount == null'> NULL) </if>
+			<!--환불 계좌번호가 있으면-->
+			<if test='refundAccount != null'> #{refundAccount} </if>
+		WHERE member_no = #{memberNo}
+  	</update>
+
+     <!-- 회원조회(마이페이지-정보관리-회원정보변경) -->
+     <select id="selectMember" resultType="Member">
+	  SELECT *
+	  FROM `member`
+	  WHERE MEMBER_DEL_FL = 'N'
+	  AND MEMBER_NO = #{memberNo}
+     </select>
+     
+     <!--비밀번호 변경(마이페이지-정보관리-비밀번호변경)-->
+	<update id="changePw">
+		update `member`
+		SET member_pw = #{memberPw}
+		WHERE member_no = #{memberNo}
+	</update>	
+	
+	
+	<!--회원 탈퇴(마이페이지-정보관리-회원정보변경-회원탈퇴)-->
+	<update id="deleteMember">
+		update `member`
+		SET member_del_fl = 'Y'
+		WHERE member_no = #{memberNo}
+	</update>
+	
+	<!-- 기간별 주문목록개수 -->
+	<select id="getOrderListCount" resultType="int">
+		SELECT COUNT(order_no)  FROM `order` 
+		WHERE member_no = #{memberNo}
+		
+		<if test='sd == "3"'>
+			AND (order_date BETWEEN  DATE_ADD(NOW(), INTERVAL -${sd} MONTH) AND NOW())
+		</if>
+		<if test='sd != "3"'>
+			AND DATE(order_date) BETWEEN  STR_TO_DATE(#{sd}, '%Y-%m-%d') AND STR_TO_DATE(#{ed}, '%Y-%m-%d')
+		</if>
+		
+		<if test='os != null'>
+			AND order_state = #{os}
+		</if>
+		<if test='os == null || os.length() == 0'>
+			AND order_state = 'A'
+		</if>
+
+		
+	</select>
+	
+	<!-- 기간별 주문목록 -->
+	<select id="selectSearchOrderList" resultType="Order">
+		SELECT *  FROM `order` 
+		WHERE member_no = #{memberNo}
+
+		<if test='sd == "3"'>
+			AND (order_date BETWEEN  DATE_ADD(NOW(), INTERVAL -${sd} MONTH) AND NOW())
+		</if>
+		<if test='sd != "3"'>
+			AND DATE(order_date) BETWEEN  STR_TO_DATE(#{sd}, '%Y-%m-%d') AND STR_TO_DATE(#{ed}, '%Y-%m-%d')
+		</if>
+		
+		<if test='os != null'>
+			AND order_state = #{os}
+		</if>
+		ORDER BY order_no DESC
+	</select>
+	
+	<!--주문 상품 조회(마이페이지-주문관리-주문조회)-->
+	<select id="selectOrderProduct" resultType="OrderProduct">
+		SELECT order_no, 
+				(SELECT sum(count) FROM order_product WHERE order_no = #{orderNo} GROUP BY order_no) count,
+				product_no,
+				option_no
+		FROM order_product
+		WHERE order_no = #{orderNo} 
+		LIMIT 1
+	</select>
+	<!-- 상품조회 -->
+	<select id="selectProduct" resultType="Product">
+		SELECT `product`.product_no,
+				product_name,
+				product_price,
+				product_sale_price,
+				product_sale,
+				product_point,
+				product_state,
+				DATE_FORMAT(product_date, '%Y-%m-%d') AS product_date,
+				click_count,
+				img_path AS thumbnail_path,
+				(select count(*) from `like` where  `product`.product_no = `like`.product_no) AS like_count
+		FROM   `product`
+				JOIN `product_img` ON `product`.product_no = `product_img`.product_no
+		WHERE  `product`.product_no = #{productNo}
+				AND thumb_fl  = 'Y'
+	</select>
+	<!-- 옵션조회 -->
+	<select id="selectOption" resultType="Option">
+		SELECT * FROM `option` WHERE option_no = #{optionNo} 
+	</select>
+	
+	<!--포인트 조회(마이페이지-주문관리-적립금 및 쿠폰)-->
+	<select id="point" resultType="Point">
+		SELECT point_no , p.member_no , point_sort , point_amount , point_date, point_due_date, point_content , order_no , order_uno 
+		FROM `point`p 
+		LEFT JOIN `order` 
+		USING (order_no)
+		WHERE p.member_No = #{memberNo}
+	</select>
+	
+	<!--적립금 개수 조회(마이페이지-주문관리-적립금 및 쿠폰)-->
+	<select id="getListCount" resultType="_int">
+		SELECT count(*) 
+		FROM `point`p 
+		LEFT JOIN `order` 
+		USING (order_no)
+		WHERE p.member_no = #{memberNo}
+	</select>
+	
+	<!--페이지네이션이 적용된 적립금 리스트 조회(마이페이지-주문관리-적립금 및 쿠폰)-->
+	<select id="selectPointList" resultType="Point">
+		SELECT point_no , p.member_no , point_sort , point_amount , point_date , point_due_date, point_content , order_no , order_uno 
+		FROM `point` p 
+		LEFT JOIN `order` USING (order_no)
+		WHERE p.member_no = #{memberNo}
+		ORDER BY 1 DESC
+	</select>
+	
+	<!-- 회원 적립금 적립/사용 누적액(마이페이지-주문관리-적립금 및 쿠폰) -->
+	<resultMap type="map" id="sumPoint_rm">
+      <result column="point_sort" property="pointSort"/>
+      <result column="point_sum" property="pointSum"/>
+    </resultMap>
+        
+	<select id="selectAccumulatedPoints" resultMap="sumPoint_rm">
+		SELECT point_sort, SUM(point_amount) point_sum
+		FROM `point` 
+		WHERE member_no = #{memberNo}
+		GROUP BY point_sort
+	</select>
+    
+    <!--쿠폰 개수 조회(마이페이지-주문관리-적립금 및 쿠폰)-->
+	<select id="getCouponListCount" resultType="_int">
+		SELECT count(*) 
+		FROM `coupon`
+		WHERE member_no = #{memberNo}
+		AND coupon_fl = 'N'
+	</select>
+	
+	<!--페이지네이션이 적용된 사용가능한 쿠폰 리스트 조회(마이페이지-주문관리-적립금 및 쿠폰)-->
+	<select id="selectCouponList" resultType="Coupon">
+		SELECT *
+		FROM `coupon` 
+		WHERE member_no = #{memberNo}
+		AND coupon_fl = 'N'
+		ORDER BY coupon_due_date
+	</select>
+	
+	<!--배송지 등록(마이페이지-정보관리-배송지 관리)-->	
+	<insert id="insertAddress">
+		INSERT INTO `address` 
+		VALUES (null, 
+				#{memberNo}, 
+				#{addressName}, 
+				#{addressReceiver}, 
+				#{address}, 
+				#{addressTel}, 
+				<!--기본배송지 등록-->
+				<!--기본배송지 등록 값이 없으면-->
+				<if test='addressDefaultFL == null'> default) </if>
+				<!--기본배송지 등록 값이 있으면-->
+				<if test='addressDefaultFL != null'> #{addressDefaultFL}) </if>
+	</insert>
+	
+	<!--기존의 기본배송지 유무 확인(마이페이지-정보관리-배송지 관리-배송지 등록)-->	
+	<select id="selectDefaultAddress" resultType="Address">
+		select * from `address`
+		where member_no = #{memberNo}
+		and address_default_fl = "Y"
+	</select>
+	
+	<!--기존 기본배송지 업데이트(마이페이지-정보관리-배송지 관리-배송지 등록)-->	
+	<update id="updateDefaultAddress">
+		update `address`
+		set address_default_fl = default
+		where address_no = #{addressNo}
+	</update>
+	
+	<!--배송지 삭제(마이페이지-정보관리-배송지관리)-->
+	<delete id="deleteAddress">
+		delete from `address`
+		where address_no in
+      <foreach collection="array"   item="no" open="(" separator="," close=")">
+             #{no} 
+      </foreach> 
+	</delete>
+	
+	<!--배송지 수정(마이페이지-정보관리-배송지관리)-->
+	<update id="updateAddress">
+		update `address`
+		SET address_name = #{addressName},
+			address_receiver = #{addressReceiver},
+			address = #{address},
+			address_tel = #{addressTel},
+			<!--기본배송지 등록-->
+			address_default_fl =
+			<!--기본배송지 등록 값이 없으면-->
+			<if test='addressDefaultFL == null'> default </if>
+			<!--기본배송지 등록 값이 있으면-->
+			<if test='addressDefaultFL != null'> #{addressDefaultFL} </if>
+		WHERE address_no = #{addressNo}
+	</update>
+	
+	
+	<!--상품 번호로 상품 조회-->
+	<select id="selectMyPageProduct" resultType="Product">
+		select * from `product` where product_no = #{productNo}
+	</select>
+	
+	<!--옵션 번호로 옵션 조회-->
+	<select id="selectMyPageProductOption" resultType="Option">
+		select * from `option` where OPTION_NO = #{optionNo}
+	</select>
+
+
+    
+    <!-- 등록된 배송지 조회 -->
+    <select id="selectAddressList" resultType="Address">
+		SELECT *
+		FROM `address`
+		WHERE member_no = #{memberNo}
+		ORDER BY address_default_fl DESC, address_no ASC;
+	</select>
+
+
+</mapper>
+

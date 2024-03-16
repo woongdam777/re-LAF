@@ -1,0 +1,198 @@
+<nav>
+  <div class="header-nav-menu">
+    <label for="menuList">
+      <img class="header-nav-menu-img" src="/images/common/menu.svg">
+    </label>
+    <input type="checkbox" id="menuList">
+    <div class="header-nav-menu-list">
+      <table>
+        <tr>
+          <td th:each="cate : ${application.category}">
+            <a th:href="@{/{c}(c=${cate.categoryNo})}"><div th:text="${cate.parentCategoryName}"></div></a>
+            <ul th:each="childCategory : ${cate.childCategoryList}">
+              <a th:href="@{/{c}(c=${cate.categoryNo}, cc=${childCategory.categoryNo})}"><li th:text="${childCategory.categoryName}"></li></a>
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="header-nav-catagory">
+    <ul class="header-nav-catagory-menu">
+      <li th:each="cate : ${application.category}">
+        <a th:href="@{/{c}(c=${cate.categoryNo})}" th:text="${cate.parentCategoryName}">카테고리 이름</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- 비회원 -->
+  <form th:action="@{/search}">
+    <div th:unless="${session.loginMember}" class="header-nav-icon">
+      <input id="searchCheckbox" class="hidden" type="checkbox">
+      <input type="text" name="query" id="query" class="hidden" placeholder="검색어를 입력하세요">
+      <label id="searchImgLabel" for="searchCheckbox">
+        <img id="searchImg" src="/images/common/search.svg">
+      </label>
+      <a href="/login"><img src="/images/common/user.svg"></a>
+      <a th:href="@{/cart2}"><img src="/images/common/cart.svg"></a>
+      <div id="cartCountContainer"><span id="cartCount">0</span></div>
+    </div>
+
+    <!-- 회원 -->
+    <div th:if="${session.loginMember}" class="header-nav-icon">
+      <input id="searchCheckbox" class="hidden" type="checkbox">
+      <input type="text" name="query" id="query" class="hidden" placeholder="검색어를 입력하세요">
+      <div id="welcome" >
+        <div style="font-size: 1.2rem; margin-top: 5px;" th:if="${session.loginMember}" th:text="|${session.loginMember.memberName} 님 방문을 환영합니다!|"></div>
+        <div id="welcomeEmoji">✧₊⁎ ╰(*°▽°*)╯ ⁎⁺✧</div>
+      </div>
+      <label id="searchImgLabel" for="searchCheckbox">
+        <img id="searchImg" src="/images/common/search.svg">
+      </label>
+      <a th:if ="${session.loginMember.memberGrade == 'A'}" href="/admin"><img src="/images/common/admin1.svg"></a>
+      <a href="/myPage"><img src="/images/common/user.svg"></a>
+      <a href="/logout"><img src="/images/common/logout1.svg"></a>
+      <a href="/cart"><img src="/images/common/cart.svg"></a>
+      <div id="cartCountContainer" class="member"><span id="cartCount" th:text="${session.cartCount}">0</span></div>
+    </div>
+  </form>
+
+  <div class="quick-menu">
+    <ul>
+      <li><a href="#"><img src="/images/common/topup.svg"></a></li>
+      <li><a href="/review"><img src="/images/common/edit.svg"></a></li>
+      <li><a href="/myPage/like"><img src="/images/common/like-fill.svg"></a></li>
+      <li><a href="/qna"><img src="/images/common/question.svg"></a></li>
+      <li class="recent-view">
+        <span class="recent-view-lbtn" id="recentViewPrev"><img src="/images/common/allowBtnLeft-white.svg"></span>
+        <a th:if="${session.clickedProducts} == null or ${#lists.size(session.clickedProducts)} == 0"><img src="/images/common/no-image.png"></a>
+        <th:block th:if="${session.clickedProducts}">
+          <th:block th:if="${#lists.size(session.clickedProducts)} == 1">
+            <a th:href="'/product/' + ${session.clickedProducts[0].productNo}">
+              <img th:src="${session.clickedProducts[0].imgPath}"></img>
+            </a>
+          </th:block>
+          <th:block th:if="${#lists.size(session.clickedProducts)} > 1" th:each="clickedProduct : ${session.clickedProducts}">
+            <a th:href="'/product/' + ${clickedProduct.productNo}" class="clickedProducts">
+              <img th:src="${clickedProduct.imgPath}">
+            </a>
+          </th:block>
+        </th:block>
+        <span class="recent-view-rbtn" id="recentViewNext"><img src="/images/common/allowBtnRight-white.svg"></span>
+      </li>
+      <li><a><img id="quickChatbot" src="/images/common/chat.svg"></a></li>
+    </ul>
+  </div>
+</nav>
+<th:block th:replace="~{chatbot/chatbot}"></th:block>
+
+<script th:inline="javascript">
+  // 현재 로그인한 회원 정보
+  var loginMember = /*[[${session.loginMember}]]*/ "";
+
+  // 검색 아이콘 클릭 시 검색어 입력창 출력
+  document.getElementById('searchImgLabel').addEventListener('click', () => {
+    const input = document.getElementById('query');
+    if(input.classList.contains('hidden')) {
+      input.classList.remove('hidden');
+      input.focus();
+    } else {
+      input.classList.add('hidden');
+      input.value = '';
+    }
+  });
+
+  // 환영문구 애니메이션 효과
+  const welcome = document.getElementById('welcomeEmoji');
+  let welcomeCount = 1;
+  if(welcome != null) {
+    setInterval(() => {
+      let str = '';
+      switch(welcomeCount) {
+        case 0:
+          str = "(*°▽°*)";
+          welcomeCount++;
+          break;
+        case 1:
+          str = "✧₊⁎ ╰(*°▽°*)╯ ⁎⁺✧";
+          welcomeCount=0;
+          break;
+      }
+
+      welcome.innerText = str;
+    }, 500);
+  }
+
+
+
+  // 퀵뷰 - 최근 조회한 항목
+  let current = 0;
+  const clickedProducts = document.querySelectorAll(".clickedProducts")
+
+
+  /* 최근 조회한 항목 초기값 */
+  for(let clickedProduct of clickedProducts) {
+    if(!(clickedProduct == clickedProducts[0])) {
+      clickedProduct.classList.add("hidden")
+    }
+  }
+
+  // 버튼
+  const recentViewPrev = document.getElementById("recentViewPrev")
+  const recentViewNext = document.getElementById("recentViewNext")
+
+/* 최근 조회한 항목 슬라이드 */
+  let curr = 0;
+  recentViewPrev.addEventListener('click',()=>{
+      curr--;
+      update();
+  })
+  recentViewNext.addEventListener('click',()=>{
+      curr++;
+      update();
+  })
+
+  function update() {
+      if(curr<0)
+          curr=clickedProducts.length-1;
+      if(curr>clickedProducts.length-1)
+          curr=0;
+          clickedProducts.forEach((clickedProduct,index)=>{
+          if(curr!=index)
+          clickedProduct.classList.add('hidden');
+          else{
+            clickedProduct.classList.remove('hidden');
+          }
+      })
+  }
+  update();
+
+  // 장바구니 갯수
+  const cartCountContainer = document.querySelector('#cartCountContainer');
+  const cartCount = cartCountContainer.querySelector('#cartCount');
+  
+  function updateCartCount(result) {
+    let count = Number(cartCount.innerText);
+    cartCount.innerText = '';
+    cartCount.innerText = count + Number(result);
+  }
+
+  (() => {
+    if(!cartCountContainer.classList.contains('member')) {
+      let cartCountCalc = 0;
+      const cookieStr = getCookie('cart');
+      if(cookieStr != null)
+        cartCountCalc = cookieStr.split('@').length - 1;
+      cartCount.innerText = cartCountCalc;
+
+      if(cartCountCalc == 0) cartCountContainer.classList.add('hidden');
+      else cartCountContainer.classList.remove('hidden');
+    }
+  })();
+
+  if(loginMember != null && loginMember.memberGrade == 'A') {
+    document.querySelector('#searchCheckbox + #query + #welcome').style.right = '190px';
+  }
+
+</script>
